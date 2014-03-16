@@ -193,25 +193,7 @@
             100% { transform: rotate(360deg); transform: rotate(360deg); }
             }
 
-            #dialog-tagList {
-                height:30px;
-                line-height: 30px;
-            }
-
-            #dialog-tagList div {
-                margin:10px 0px;
-            }
-
-            #dialog-tagList div:hover {
-                color: royalblue;
-                cursor: pointer;
-            }
-
-            #dialog-tagList img {
-                height:30px;
-                float:right;
-            }
-
+ 
             .menu img {
                 cursor: pointer;
                 height: 45px;
@@ -243,6 +225,7 @@
 
         <link rel="stylesheet" href="css/loadingBar.css">
         <link rel="stylesheet" href="css/jquery-ui.css">
+        <link rel="stylesheet" href="css/dialog.css">
 
 
         <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
@@ -575,7 +558,7 @@
                                             var storeName = (tags['tags'][x]['storeName']).toUpperCase();
                                             var storeId = (tags['tags'][x]['storeId']);
                                             $("#dialog-tagList").append("<div storeId='" + storeId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
-                                            
+
                                         }
                                         $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
                                     }
@@ -1005,20 +988,13 @@
             function openFavList() {
                 $('#dialog-tagList').dialog({
                     autoOpen: false,
-                    height: 400,
-                    width: 300,
+                    height: 450,
+                    width: 350,
                     draggable: false,
                     modal: true,
                     resizable: false,
-                    buttons: {
-                        'Close': function() {
-                            $(this).dialog('close');
-                            $('#dialog-tagList').empty();
-                            $('.loading').remove();
-                        }
-                    },
                     close: function() {
-                        $('#dialog-tagList').empty();
+                        $('#tag-display').empty();
                         $('.loading').remove();
                     }
                 });
@@ -1039,7 +1015,7 @@
                             for (var x = 0; x < tags['tags'].length; x++) {
                                 var storeName = (tags['tags'][x]['storeName']).toUpperCase();
                                 var storeId = (tags['tags'][x]['storeId']);
-                                $("#dialog-tagList").append("<div storeId='" + storeId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
+                                $("#tag-display").append("<div storeId='" + storeId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
                             }
                             $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
 
@@ -1098,12 +1074,12 @@
         </div>
         <div id="legend" style="background: white;padding: 15px"></div>
         <div id="menu" class="menu" style="text-align: right; position: absolute;right: 10px; top:15%; z-index: 4;">
-            <div style=" height: 65px;"><img id="personalInfo" src="icon/profle.png"/></div>
-            <div style=" height: 65px;"><img id="favList" onclick="openFavList();" src="icon/follow.png"/></div>
-            <div style=" height: 65px;"><img id="chat" src="icon/chat.png" /></div>
-            <div id="uiDirect"  style=" height: 65px;"><img id="listsStores" src="icon/arrow-left.png" onclick="sizeCenterPane();"/></div>
-            <div style=" height: 65px;"><img id="zoomin" onclick="zoomIn();" src="icon/zoomin.png" /></div>
-            <div style=" height: 65px;"><img id="zoomout" onclick="zoomOut();" src="icon/zoomout.png" /></div>
+            <div style=" height: 65px;"><img id="personalInfo" src="icon/profle.png" title="Personal Profile"/></div>
+            <div style=" height: 65px;"><img id="favList" onclick="openFavList();" src="icon/follow.png" title="Tap List"/></div>
+            <div style=" height: 65px;"><img id="chat" src="icon/chat.png" title="Chat"/></div>
+            <div id="uiDirect"  style=" height: 65px;"><img id="listsStores" src="icon/arrow-left.png" onclick="sizeCenterPane();" title="Store List"/></div>
+            <div style=" height: 65px;"><img id="zoomin" onclick="zoomIn();" src="icon/zoomin.png" title="Zoom In"/></div>
+            <div style=" height: 65px;"><img id="zoomout" onclick="zoomOut();" src="icon/zoomout.png" title="Zoom Out"/></div>
         </div>
         <script>
 
@@ -1127,13 +1103,13 @@
 
                             $("#dialog-form").dialog({
                                 autoOpen: false,
-                                height: 300,
-                                width: 380,
+                                height: 400,
+                                width: 350,
                                 draggable: false,
                                 modal: true,
                                 resizable: false,
                                 buttons: {
-                                    "Login": function() {
+                                    "Log In": function() {
                                         var bValid = true;
                                         allFields.removeClass("ui-state-error");
 
@@ -1156,12 +1132,12 @@
                                     },
                                     Cancel: function() {
                                         $(this).dialog("close");
-                                        $(".validateTips").html("");
-                                        $('.loading').remove();
                                     }
                                 },
                                 close: function() {
+                                    $("#dialog-form").parent().empty();
                                     allFields.val("").removeClass("ui-state-error");
+                                    $(".validateTips").html("");
                                     $('.loading').remove();
                                 }
                             });
@@ -1174,9 +1150,9 @@
                                 collision: "fit" + " " + "fit"
                             });
                             $("#dialog-form").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
-
+                            $("#dialog-form").parent().append('<div class="loginByOthers"><img src="icon/fb.png"/><img src="icon/twitter.png"/><img src="icon/googleplus.png"/></div>');
                         } else {
-                            $("#dialog-personalInfo").empty();
+                            $("#personalInfo-display").empty();
 
                             $("#dialog-personalInfo").dialog({
                                 height: 400,
@@ -1212,10 +1188,11 @@
 
                             var json = JSON.parse(login);
                             window.console.log(json);
-                            $("#dialog-personalInfo").append('User ID:<div>' + json['user']['userID'] + '</div>');
-                            $("#dialog-personalInfo").append('Email Address:<div>' + json['user']['email'] + '</div>');
-                            $("#dialog-personalInfo").append('Credit:<div>' + json['user']['credit'] + '</div>');
-                            $("#dialog-personalInfo").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
+                            $("#personalInfo-display").append('<div>User ID:' + json['user']['userID'] + '</div>');
+                            
+                            $("#personalInfo-display").append('<div>Credit:' + json['user']['credit'] + '</div>');
+                            $("#personalInfo-display").append('Email Address:<div>' + json['user']['email'] + '</div>');
+                            $("#personalInfo-display").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
                         }
                     },
                     fail: function() {
@@ -1270,24 +1247,23 @@
 
         </div>
 
-        <div id="dialog-form" title="Login">
+        <div id="dialog-form" class="diaglog-form">
+            <div class="login-title">Log In</div>
             <p class="validateTips" style=" height: 10px; color:  red;"></p>
             <form>
-                <fieldset>
-                    <label for="userId">User ID</label>
-                    <input type="text" name="userId" id="userId" class="text ui-widget-content ui-corner-all">
-                    <label for="password">Password</label>
-                    <input type="password" name="password" id="password" value="" class="text ui-widget-content ui-corner-all">
-                </fieldset>
+                <input type="text" name="userId" id="userId" placeholder="User ID" class="text ui-widget-content ui-corner-all">
+                <input type="password" name="password" id="password" placeholder="Password" value="" class="text ui-widget-content ui-corner-all">
             </form>
-        </div>
-        <div id="dialog-personalInfo" title="Your Info">
-
 
         </div>
+        <div id="dialog-personalInfo">
+            <div class="login-title">Personal Profile</div>
+            <div id="personalInfo-display" class="personalInfo-display"></div>
+        </div>
 
-        <div id="dialog-tagList" title="Following Store">
-
+        <div id="dialog-tagList">
+            <div class="login-title">Your Favorite</div>
+            <div id="tag-display" class="tag-display"></div>
         </div>
 
         <script>
