@@ -28,6 +28,14 @@
     <class>bean.Category</class>
     <class>bean.Merchandise</class>
     <class>bean.StoreMerchandise</class>
+    <class>bean.Message</class>
+    <class>bean.Chatroom</class>
+    <class>bean.Cloth</class>
+    <class>bean.Promotionscheme</class>
+    <class>bean.Storeuppergarmentchoice</class>
+    <class>bean.Uppergarment</class>
+    <class>bean.Promotionpreference</class>
+    <class>bean.PhonotapeAndVideotape</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/product?zeroDateTimeBehavior=convertToNull"/>

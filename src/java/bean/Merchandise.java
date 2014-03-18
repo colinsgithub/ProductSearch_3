@@ -5,8 +5,10 @@
 package bean;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Date;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -15,10 +17,13 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -34,6 +39,12 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "Merchandise.findByMerchandiseName", query = "SELECT m FROM Merchandise m WHERE m.merchandiseName = :merchandiseName"),
     @NamedQuery(name = "Merchandise.findByListingYear", query = "SELECT m FROM Merchandise m WHERE m.listingYear = :listingYear")})
 public class Merchandise implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "merchandise")
+    private Collection<StoreMerchandise> storeMerchandiseCollection;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "merchandise")
+    private Cloth cloth;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "merchandise")
+    private PhonotapeAndVideotape phonotapeAndVideotape;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected MerchandisePK merchandisePK;
@@ -153,6 +164,31 @@ public class Merchandise implements Serializable {
     @Override
     public String toString() {
         return "bean.Merchandise[ merchandisePK=" + merchandisePK + " ]";
+    }
+
+    @XmlTransient
+    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
+        return storeMerchandiseCollection;
+    }
+
+    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
+        this.storeMerchandiseCollection = storeMerchandiseCollection;
+    }
+
+    public Cloth getCloth() {
+        return cloth;
+    }
+
+    public void setCloth(Cloth cloth) {
+        this.cloth = cloth;
+    }
+
+    public PhonotapeAndVideotape getPhonotapeAndVideotape() {
+        return phonotapeAndVideotape;
+    }
+
+    public void setPhonotapeAndVideotape(PhonotapeAndVideotape phonotapeAndVideotape) {
+        this.phonotapeAndVideotape = phonotapeAndVideotape;
     }
     
 }

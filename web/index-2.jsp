@@ -152,25 +152,24 @@
                 background-color:rgb(81, 81, 81);
             }
 
-
             .loading {
-                top: 25px;
-                right: 60px;
-                display: block;
                 position: absolute;
+                background: #29d;
                 z-index: 2000;
-                width: 20px;
-                height: 20px;
-                border: solid 2px transparent;
-                border-top-color: #29d;
-                border-left-color: #29d;
-                border-radius: 40px;
-                -webkit-animation: pace-spinner 600ms linear infinite;
-                -moz-animation: pace-spinner 600ms linear infinite;
-                -ms-animation: pace-spinner 600ms linear infinite;
-                -o-animation: pace-spinner 600ms linear infinite;
-                animation: pace-spinner 600ms linear infinite;
+                top: 0;
+                left: 0;
+                height: 2px;
+                width: 100%;
+                -webkit-transition: width 1s;
+                -moz-transition: width 1s;
+                -o-transition: width 1s;
+                transition: width 1s;
             }
+
+            .pace-inactive {
+                display: none;
+            }
+
 
             @-webkit-keyframes pace-spinner {
                 0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
@@ -193,7 +192,7 @@
             100% { transform: rotate(360deg); transform: rotate(360deg); }
             }
 
- 
+
             .menu img {
                 cursor: pointer;
                 height: 45px;
@@ -1017,7 +1016,7 @@
                                 var storeId = (tags['tags'][x]['storeId']);
                                 $("#tag-display").append("<div storeId='" + storeId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
                             }
-                            $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
+                            $("#dialog-tagList").parent().prepend("<div id='loading' class='loading' style='display: none;'></div>");
 
                             $('#dialog-tagList').dialog('open');
 
@@ -1149,7 +1148,8 @@
                                 at: "left" + " " + "top",
                                 collision: "fit" + " " + "fit"
                             });
-                            $("#dialog-form").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
+                            $("#dialog-form").parent().prepend("<div id='loading' class='loading' style='display: none;'></div>");
+
                             $("#dialog-form").parent().append('<div class="loginByOthers"><img src="icon/fb.png"/><img src="icon/twitter.png"/><img src="icon/googleplus.png"/></div>');
                         } else {
                             $("#personalInfo-display").empty();
@@ -1161,6 +1161,9 @@
                                 resizable: false,
                                 draggable: false,
                                 buttons: {
+                                    'More': function() {
+                                        window.location.href = "HandleUser?action=getUserInfo";
+                                    },
                                     'Logout': function() {
 
                                         $.ajax({
@@ -1189,10 +1192,10 @@
                             var json = JSON.parse(login);
                             window.console.log(json);
                             $("#personalInfo-display").append('<div>User ID:' + json['user']['userID'] + '</div>');
-                            
+
                             $("#personalInfo-display").append('<div>Credit:' + json['user']['credit'] + '</div>');
                             $("#personalInfo-display").append('Email Address:<div>' + json['user']['email'] + '</div>');
-                            $("#personalInfo-display").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
+                            $("#personalInfo-display").parentsUntil('#ui-dialog').prepend("<div id='loading' class='loading' style='display: none;'></div>");
                         }
                     },
                     fail: function() {

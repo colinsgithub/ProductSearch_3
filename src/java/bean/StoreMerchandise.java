@@ -5,15 +5,22 @@
 package bean;
 
 import java.io.Serializable;
+import java.util.Collection;
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.Lob;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -33,6 +40,16 @@ import javax.xml.bind.annotation.XmlRootElement;
     @NamedQuery(name = "StoreMerchandise.findByMerchandiseImage2", query = "SELECT s FROM StoreMerchandise s WHERE s.merchandiseImage2 = :merchandiseImage2"),
     @NamedQuery(name = "StoreMerchandise.findByMerchandiseImage3", query = "SELECT s FROM StoreMerchandise s WHERE s.merchandiseImage3 = :merchandiseImage3")})
 public class StoreMerchandise implements Serializable {
+    @JoinColumn(name = "storeID", referencedColumnName = "storeID", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Store store;
+    @JoinColumns({
+        @JoinColumn(name = "merchandiseID", referencedColumnName = "merchandiseID", insertable = false, updatable = false),
+        @JoinColumn(name = "categoryID", referencedColumnName = "categoryID", insertable = false, updatable = false)})
+    @ManyToOne(optional = false)
+    private Merchandise merchandise;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "storeMerchandise")
+    private Collection<Storeuppergarmentchoice> storeuppergarmentchoiceCollection;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected StoreMerchandisePK storeMerchandisePK;
@@ -137,6 +154,31 @@ public class StoreMerchandise implements Serializable {
     @Override
     public String toString() {
         return "bean.StoreMerchandise[ storeMerchandisePK=" + storeMerchandisePK + " ]";
+    }
+
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public Merchandise getMerchandise() {
+        return merchandise;
+    }
+
+    public void setMerchandise(Merchandise merchandise) {
+        this.merchandise = merchandise;
+    }
+
+    @XmlTransient
+    public Collection<Storeuppergarmentchoice> getStoreuppergarmentchoiceCollection() {
+        return storeuppergarmentchoiceCollection;
+    }
+
+    public void setStoreuppergarmentchoiceCollection(Collection<Storeuppergarmentchoice> storeuppergarmentchoiceCollection) {
+        this.storeuppergarmentchoiceCollection = storeuppergarmentchoiceCollection;
     }
     
 }

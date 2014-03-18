@@ -43,6 +43,10 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Store.findByAltitude", query = "SELECT s FROM Store s WHERE s.altitude = :altitude"),
     @NamedQuery(name = "Store.findByStoreCreateTime", query = "SELECT s FROM Store s WHERE s.storeCreateTime = :storeCreateTime")})
 public class Store implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+    private Collection<Promotionscheme> promotionschemeCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+    private Collection<StoreMerchandise> storeMerchandiseCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -244,6 +248,24 @@ public class Store implements Serializable {
     @Override
     public String toString() {
         return "bean.Store[ storeID=" + storeID + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Promotionscheme> getPromotionschemeCollection() {
+        return promotionschemeCollection;
+    }
+
+    public void setPromotionschemeCollection(Collection<Promotionscheme> promotionschemeCollection) {
+        this.promotionschemeCollection = promotionschemeCollection;
+    }
+
+    @XmlTransient
+    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
+        return storeMerchandiseCollection;
+    }
+
+    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
+        this.storeMerchandiseCollection = storeMerchandiseCollection;
     }
     
 }

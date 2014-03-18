@@ -35,6 +35,14 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "User.findByCredit", query = "SELECT u FROM User u WHERE u.credit = :credit"),
     @NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role")})
 public class User implements Serializable {
+    @OneToMany(mappedBy = "administrator")
+    private Collection<Chatroom> chatroomCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    private Collection<Chatroom> chatroomCollection1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<Promotionpreference> promotionpreferenceCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<Message> messageCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
@@ -231,6 +239,42 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "bean.User[ userID=" + userID + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Chatroom> getChatroomCollection() {
+        return chatroomCollection;
+    }
+
+    public void setChatroomCollection(Collection<Chatroom> chatroomCollection) {
+        this.chatroomCollection = chatroomCollection;
+    }
+
+    @XmlTransient
+    public Collection<Chatroom> getChatroomCollection1() {
+        return chatroomCollection1;
+    }
+
+    public void setChatroomCollection1(Collection<Chatroom> chatroomCollection1) {
+        this.chatroomCollection1 = chatroomCollection1;
+    }
+
+    @XmlTransient
+    public Collection<Promotionpreference> getPromotionpreferenceCollection() {
+        return promotionpreferenceCollection;
+    }
+
+    public void setPromotionpreferenceCollection(Collection<Promotionpreference> promotionpreferenceCollection) {
+        this.promotionpreferenceCollection = promotionpreferenceCollection;
+    }
+
+    @XmlTransient
+    public Collection<Message> getMessageCollection() {
+        return messageCollection;
+    }
+
+    public void setMessageCollection(Collection<Message> messageCollection) {
+        this.messageCollection = messageCollection;
     }
     
 }

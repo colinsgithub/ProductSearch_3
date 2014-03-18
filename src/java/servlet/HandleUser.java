@@ -151,6 +151,23 @@ public class HandleUser extends HttpServlet {
                 rd = getServletContext().getRequestDispatcher("/editCustomer.jsp");
                 rd.forward(request, response);
             }
+        } else if ("getUserInfo".equalsIgnoreCase(action)) {
+            HttpSession httpSession = request.getSession();
+            User user = (User) httpSession.getAttribute("user");
+
+            EntityManagerFactory factory = Persistence.createEntityManagerFactory("ProductSearch_3PU");
+            EntityManager em = factory.createEntityManager();
+            em.getTransaction().begin();
+
+            em.getTransaction().commit();
+            em.close();
+            factory.close();
+            
+            request.setAttribute("user", user);
+
+            RequestDispatcher rd;
+            rd = getServletContext().getRequestDispatcher("/personalInfo.jsp");
+            rd.forward(request, response);
         } else {
             PrintWriter out = response.getWriter();
             out.println("No such action!!!");
