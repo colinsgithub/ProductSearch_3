@@ -16,6 +16,7 @@
             body {
                 min-width: 1200px;
                 min-height: 600px;
+                
             }
 
             .labels {
@@ -263,7 +264,6 @@
                     lopStore();
                     changeZoom();
                 });
-
                 //animation for menu button
                 $('#menu img').mouseenter(
                         function(event, ui) {
@@ -276,10 +276,7 @@
                                 height: '45px'
                             }, 100);
                         });
-
-            });
-
-        </script>
+            });</script>
 
 
         <script>
@@ -290,7 +287,6 @@
             var directionsService = new google.maps.DirectionsService();
             var map;
             var markersArray = [];
-
             function initialize() {
                 if (navigator.geolocation) {
 
@@ -301,8 +297,7 @@
                         streetViewControl: true
                     };
                     map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
-
-                    geoLocation();//current location
+                    geoLocation(); //current location
 
                 } else {
                     // Browser doesn't support Geolocation
@@ -348,8 +343,6 @@
                     $(event.target).siblings('div').css('visibility', 'visible');
                     $(event.target).css('visibility', 'hidden');
                 });
-
-
             <%
                 String lat = "";
                 String lng = "";
@@ -416,7 +409,6 @@
                         labelClass: "labels", // the CSS class for the label
                         labelStyle: {opacity: 1}
                     });
-
                     google.maps.event.addListener(marker, 'click', function() {
                         //alert('Marker Click');
                         cityCircle.setCenter(marker.getPosition());
@@ -438,7 +430,6 @@
 
 
                                 markersArray[i][0].push(marker);
-
                                 marker.setMap(null);
                                 markerRecord = false;
                                 var infoList = "<div style='height:165px;overflow-x:auto'><table style='width:250px;margin:7px;'>";
@@ -499,7 +490,7 @@
                                 //"<tr><td><a href=\"javascript:calcRoute(this);" + "\" x='" + "happy" + "'>Direct</a></td></tr>" +
                                 "<tr><td><button id='comment' storeId='" + storeId + "' onclick='comment(this);'>Comment</button></td></tr>" +
                                 "</table>";
-                        infoString += "<img style='width:25px;' storeId='" + storeId + "' src='icon/heart.png' onclick='addToFollowList(this);'>";
+                        infoString += "<a storeId='" + storeId + "' onclick='addToFollowList(this);'><img style='width:25px;' src='icon/heart.png' ></a>";
                         addInfoWindow(marker, infoString);
                     }
 
@@ -518,19 +509,86 @@
                     success: function(response) {
                         var isLogin = (response === 'false');
                         if (isLogin) {
-                            $('#personalInfo').click();
+                            BookmarkApp.addBookmark(obj);
+                            //$('#personalInfo').click();
                         } else {
                             alert(response);
-                            var isAdded = (response === 'true');
-                            if (isAdded) {
-                                alert("Success");
-                            }
                         }
                     }
                 });
-
-
             }
+
+            BookmarkApp = function() {
+                var isIEmac = false; /*@cc_on @if(@_jscript&&!(@_win32||@_win16)&&(@_jscript_version<5.5)) isIEmac=true; @end @*/
+                var isMSIE = (-[1, ]) ? false : true;
+                var cjTitle = document.title; // Bookmark title 
+                var cjHref = location.href;   // Bookmark url
+
+                function hotKeys() {
+                    var ua = navigator.userAgent.toLowerCase();
+                    var str = '';
+                    var isWebkit = (ua.indexOf('webkit') != -1);
+                    var isMac = (ua.indexOf('mac') != -1);
+
+                    if (ua.indexOf('konqueror') != -1) {
+                        str = 'CTRL + B'; // Konqueror
+                    } else if (window.home || isWebkit || isIEmac || isMac) {
+                        str = (isMac ? 'Command/Cmd' : 'CTRL') + ' + D'; // Netscape, Safari, iCab, IE5/Mac
+                    }
+                    return ((str) ? 'Press ' + str + ' to bookmark this page.' : str);
+                }
+
+                function isIE8() {
+                    var rv = -1;
+                    if (navigator.appName == 'Microsoft Internet Explorer') {
+                        var ua = navigator.userAgent;
+                        var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
+                        if (re.exec(ua) != null) {
+                            rv = parseFloat(RegExp.$1);
+                        }
+                    }
+                    if (rv > -1) {
+                        if (rv >= 8.0) {
+                            return true;
+                        }
+                    }
+                    return false;
+                }
+
+                function addBookmark(a) {
+                    try {
+                        if (typeof a == "object" && a.tagName.toLowerCase() == "a") {
+                            a.style.cursor = 'pointer';
+                            if ((typeof window.sidebar == "object") && (typeof window.sidebar.addPanel == "function")) {
+                                window.sidebar.addPanel(cjTitle, cjHref, ""); // Gecko
+                                return false;
+                            } else if (isMSIE && typeof window.external == "object") {
+                                if (isIE8()) {
+                                    window.external.AddToFavoritesBar(cjHref, cjTitle); // IE 8                    
+                                } else {
+                                    window.external.AddFavorite(cjHref, cjTitle); // IE <=7
+                                }
+                                return false;
+                            } else if (window.opera) {
+                                a.href = cjHref;
+                                a.title = cjTitle;
+                                a.rel = 'sidebar'; // Opera 7+
+                                return true;
+                            } else {
+                                alert(hotKeys());
+                            }
+                        } else {
+                            throw "Error occured.\r\nNote, only A tagname is allowed!";
+                        }
+                    } catch (err) {
+                        alert(err);
+                    }
+                }
+
+                return {
+                    addBookmark: addBookmark
+                }
+            }();
 
             function cancelTag(obj) {
 
@@ -557,13 +615,11 @@
                                             var storeName = (tags['tags'][x]['storeName']).toUpperCase();
                                             var storeId = (tags['tags'][x]['storeId']);
                                             $("#dialog-tagList").append("<div storeId='" + storeId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
-
                                         }
                                         $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
                                     }
                                 }
                             });
-
                             var isAdded = (response === 'true');
                             if (isAdded) {
 
@@ -758,7 +814,6 @@
                             position.coords.longitude);
                     map.setCenter(pos);
                     setCircle(500, pos);
-
                     marker1 = new MarkerWithLabel({
                         position: pos,
                         draggable: true,
@@ -782,7 +837,6 @@
                         map.setCenter(marker1.getPosition());
                         lopStore();
                     });
-
                     lopStore();
                 }, function() {
                     handleNoGeolocation(true);
@@ -997,9 +1051,6 @@
                         $('.loading').remove();
                     }
                 });
-
-
-
                 $.ajax({
                     url: 'HandleTag?action=getTags',
                     type: 'POST',
@@ -1017,29 +1068,19 @@
                                 $("#tag-display").append("<div storeId='" + storeId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
                             }
                             $("#dialog-tagList").parent().prepend("<div id='loading' class='loading' style='display: none;'></div>");
-
                             $('#dialog-tagList').dialog('open');
-
                             $("#dialog-tagList").parent().position({
                                 of: $("#favList").parent(),
                                 my: "right" + " " + "top",
                                 at: "left" + " " + "top",
                                 collision: "fit" + " " + "fit"
                             });
-
-
-
                         }
                     }
                 });
-
-
-
-
             }
 
-            google.maps.event.addDomListener(window, 'load', initialize);
-        </script>
+            google.maps.event.addDomListener(window, 'load', initialize);</script>
 
 
     </head>
@@ -1098,8 +1139,6 @@
                                     password = $("#password"),
                                     allFields = $([]).add(userId).add(password),
                                     tips = $(".validateTips");
-
-
                             $("#dialog-form").dialog({
                                 autoOpen: false,
                                 height: 400,
@@ -1111,7 +1150,6 @@
                                     "Log In": function() {
                                         var bValid = true;
                                         allFields.removeClass("ui-state-error");
-
                                         if (bValid) {
                                             $.ajax({
                                                 url: 'HandleUser?action=login&userId=' + userId.val() + '&password=' + password.val(),
@@ -1126,7 +1164,6 @@
                                                     }
                                                 }
                                             });
-
                                         }
                                     },
                                     Cancel: function() {
@@ -1140,7 +1177,6 @@
                                     $('.loading').remove();
                                 }
                             });
-
                             $("#dialog-form").dialog("open");
                             $("#dialog-form").parent().position({
                                 of: $("#personalInfo").parent(),
@@ -1149,11 +1185,9 @@
                                 collision: "fit" + " " + "fit"
                             });
                             $("#dialog-form").parent().prepend("<div id='loading' class='loading' style='display: none;'></div>");
-
                             $("#dialog-form").parent().append('<div class="loginByOthers"><img src="icon/fb.png"/><img src="icon/twitter.png"/><img src="icon/googleplus.png"/></div>');
                         } else {
                             $("#personalInfo-display").empty();
-
                             $("#dialog-personalInfo").dialog({
                                 height: 400,
                                 width: 350,
@@ -1177,22 +1211,19 @@
                                                     alert("logout successfully");
                                                 }
                                             }});
-
                                     }
                                 }
                             });
-
                             $("#dialog-personalInfo").parent().position({
                                 of: $("#personalInfo").parent(),
                                 my: "right" + " " + "top",
                                 at: "left" + " " + "top",
                                 collision: "fit" + " " + "fit"
                             });
-
                             var json = JSON.parse(login);
                             window.console.log(json);
                             $("#personalInfo-display").append('<div>User ID:' + json['user']['userID'] + '</div>');
-
+                            $("#personalInfo-display").append('<div>User Name:' + (json['user']['userName']).toString().toUpperCase() + '</div>');
                             $("#personalInfo-display").append('<div>Credit:' + json['user']['credit'] + '</div>');
                             $("#personalInfo-display").append('Email Address:<div>' + json['user']['email'] + '</div>');
                             $("#personalInfo-display").parentsUntil('#ui-dialog').prepend("<div id='loading' class='loading' style='display: none;'></div>");
@@ -1202,14 +1233,7 @@
                         alert('error');
                     }
                 });
-
-
-
-            });
-
-
-
-        </script>
+            });</script>
 
         <div id="mainContent">
 
@@ -1244,8 +1268,7 @@
                 $('#specificStore').animate({right: '-70%'});
                 $('#mainContent').animate({right: '0%'});
                 $('#returnToMap').css({visibility: 'hidden'});
-            });
-        </script>
+            });</script>
         <div id="specificStore" style="box-shadow: rgba(0, 0, 0, 0.298039) 0px 2px 60px;position: absolute; width: 70%; height: 100%;top: 0px; right: -70%;background-color: window;z-index: 3;">
 
         </div>
@@ -1275,7 +1298,8 @@
                 $("#loading").show();
             }).bind("ajaxComplete", function() {
                 $("#loading").hide();
-            });
+            }
+            );
         </script>
     </body>
 </html>

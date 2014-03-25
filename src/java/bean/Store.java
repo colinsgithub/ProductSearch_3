@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author poonkaho
  */
 @Entity
-@Table(name = "store")
+@Table(name = "Store")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Store.findAll", query = "SELECT s FROM Store s"),
@@ -43,10 +43,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Store.findByAltitude", query = "SELECT s FROM Store s WHERE s.altitude = :altitude"),
     @NamedQuery(name = "Store.findByStoreCreateTime", query = "SELECT s FROM Store s WHERE s.storeCreateTime = :storeCreateTime")})
 public class Store implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private Collection<Promotionscheme> promotionschemeCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private Collection<StoreMerchandise> storeMerchandiseCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -57,7 +53,6 @@ public class Store implements Serializable {
     @Lob
     @Column(name = "storeName")
     private String storeName;
-    @Basic(optional = false)
     @Lob
     @Column(name = "address")
     private String address;
@@ -66,15 +61,13 @@ public class Store implements Serializable {
     @Basic(optional = false)
     @Column(name = "rank")
     private double rank;
-    @Basic(optional = false)
+    // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Column(name = "latitude")
-    private double latitude;
-    @Basic(optional = false)
+    private Double latitude;
     @Column(name = "longitude")
-    private double longitude;
-    @Basic(optional = false)
+    private Double longitude;
     @Column(name = "altitude")
-    private double altitude;
+    private Double altitude;
     @Lob
     @Column(name = "storeDesc")
     private String storeDesc;
@@ -82,6 +75,9 @@ public class Store implements Serializable {
     @Column(name = "storeCreateTime")
     @Temporal(TemporalType.TIMESTAMP)
     private Date storeCreateTime;
+    @Lob
+    @Column(name = "storeAvatar")
+    private String storeAvatar;
     @JoinColumn(name = "userID", referencedColumnName = "userID")
     @ManyToOne(optional = false)
     private User userID;
@@ -89,7 +85,11 @@ public class Store implements Serializable {
     @ManyToOne(optional = false)
     private Category categoryID;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+    private Collection<StoreMerchandise> storeMerchandiseCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "storeID")
     private Collection<Tag> tagCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+    private Collection<PromotionScheme> promotionSchemeCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     private Collection<Comment> commentCollection;
 
@@ -100,14 +100,10 @@ public class Store implements Serializable {
         this.storeID = storeID;
     }
 
-    public Store(Integer storeID, String storeName, String address, double rank, double latitude, double longitude, double altitude, Date storeCreateTime) {
+    public Store(Integer storeID, String storeName, double rank, Date storeCreateTime) {
         this.storeID = storeID;
         this.storeName = storeName;
-        this.address = address;
         this.rank = rank;
-        this.latitude = latitude;
-        this.longitude = longitude;
-        this.altitude = altitude;
         this.storeCreateTime = storeCreateTime;
     }
 
@@ -151,27 +147,27 @@ public class Store implements Serializable {
         this.rank = rank;
     }
 
-    public double getLatitude() {
+    public Double getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(double latitude) {
+    public void setLatitude(Double latitude) {
         this.latitude = latitude;
     }
 
-    public double getLongitude() {
+    public Double getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(double longitude) {
+    public void setLongitude(Double longitude) {
         this.longitude = longitude;
     }
 
-    public double getAltitude() {
+    public Double getAltitude() {
         return altitude;
     }
 
-    public void setAltitude(double altitude) {
+    public void setAltitude(Double altitude) {
         this.altitude = altitude;
     }
 
@@ -191,6 +187,14 @@ public class Store implements Serializable {
         this.storeCreateTime = storeCreateTime;
     }
 
+    public String getStoreAvatar() {
+        return storeAvatar;
+    }
+
+    public void setStoreAvatar(String storeAvatar) {
+        this.storeAvatar = storeAvatar;
+    }
+
     public User getUserID() {
         return userID;
     }
@@ -208,12 +212,30 @@ public class Store implements Serializable {
     }
 
     @XmlTransient
+    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
+        return storeMerchandiseCollection;
+    }
+
+    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
+        this.storeMerchandiseCollection = storeMerchandiseCollection;
+    }
+
+    @XmlTransient
     public Collection<Tag> getTagCollection() {
         return tagCollection;
     }
 
     public void setTagCollection(Collection<Tag> tagCollection) {
         this.tagCollection = tagCollection;
+    }
+
+    @XmlTransient
+    public Collection<PromotionScheme> getPromotionSchemeCollection() {
+        return promotionSchemeCollection;
+    }
+
+    public void setPromotionSchemeCollection(Collection<PromotionScheme> promotionSchemeCollection) {
+        this.promotionSchemeCollection = promotionSchemeCollection;
     }
 
     @XmlTransient
@@ -248,24 +270,6 @@ public class Store implements Serializable {
     @Override
     public String toString() {
         return "bean.Store[ storeID=" + storeID + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Promotionscheme> getPromotionschemeCollection() {
-        return promotionschemeCollection;
-    }
-
-    public void setPromotionschemeCollection(Collection<Promotionscheme> promotionschemeCollection) {
-        this.promotionschemeCollection = promotionschemeCollection;
-    }
-
-    @XmlTransient
-    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
-        return storeMerchandiseCollection;
-    }
-
-    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
-        this.storeMerchandiseCollection = storeMerchandiseCollection;
     }
     
 }

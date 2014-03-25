@@ -1,18 +1,19 @@
 package bean;
 
 import bean.Store;
-import bean.TagPK;
 import bean.User;
+import java.util.Date;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-03-22T12:06:15")
+@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-03-24T20:17:24")
 @StaticMetamodel(Tag.class)
 public class Tag_ { 
 
-    public static volatile SingularAttribute<Tag, Store> store;
-    public static volatile SingularAttribute<Tag, TagPK> tagPK;
-    public static volatile SingularAttribute<Tag, User> user;
+    public static volatile SingularAttribute<Tag, User> userID;
+    public static volatile SingularAttribute<Tag, Date> creationTime;
+    public static volatile SingularAttribute<Tag, Integer> tagID;
+    public static volatile SingularAttribute<Tag, Store> storeID;
 
 }

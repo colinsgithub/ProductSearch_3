@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author poonkaho
  */
 @Entity
-@Table(name = "message")
+@Table(name = "Message")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Message.findAll", query = "SELECT m FROM Message m"),
@@ -48,7 +48,7 @@ public class Message implements Serializable {
     private User user;
     @JoinColumn(name = "roomID", referencedColumnName = "roomID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
-    private Chatroom chatroom;
+    private ChatRoom chatRoom;
 
     public Message() {
     }
@@ -98,12 +98,12 @@ public class Message implements Serializable {
         this.user = user;
     }
 
-    public Chatroom getChatroom() {
-        return chatroom;
+    public ChatRoom getChatRoom() {
+        return chatRoom;
     }
 
-    public void setChatroom(Chatroom chatroom) {
-        this.chatroom = chatroom;
+    public void setChatRoom(ChatRoom chatRoom) {
+        this.chatRoom = chatRoom;
     }
 
     @Override

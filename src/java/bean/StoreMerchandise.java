@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author poonkaho
  */
 @Entity
-@Table(name = "storemerchandise")
+@Table(name = "StoreMerchandise")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "StoreMerchandise.findAll", query = "SELECT s FROM StoreMerchandise s"),
@@ -40,16 +40,6 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "StoreMerchandise.findByMerchandiseImage2", query = "SELECT s FROM StoreMerchandise s WHERE s.merchandiseImage2 = :merchandiseImage2"),
     @NamedQuery(name = "StoreMerchandise.findByMerchandiseImage3", query = "SELECT s FROM StoreMerchandise s WHERE s.merchandiseImage3 = :merchandiseImage3")})
 public class StoreMerchandise implements Serializable {
-    @JoinColumn(name = "storeID", referencedColumnName = "storeID", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private Store store;
-    @JoinColumns({
-        @JoinColumn(name = "merchandiseID", referencedColumnName = "merchandiseID", insertable = false, updatable = false),
-        @JoinColumn(name = "categoryID", referencedColumnName = "categoryID", insertable = false, updatable = false)})
-    @ManyToOne(optional = false)
-    private Merchandise merchandise;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "storeMerchandise")
-    private Collection<Storeuppergarmentchoice> storeuppergarmentchoiceCollection;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected StoreMerchandisePK storeMerchandisePK;
@@ -66,6 +56,16 @@ public class StoreMerchandise implements Serializable {
     private String merchandiseImage2;
     @Column(name = "merchandiseImage3")
     private String merchandiseImage3;
+    @JoinColumn(name = "storeID", referencedColumnName = "storeID", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private Store store;
+    @JoinColumns({
+        @JoinColumn(name = "merchandiseID", referencedColumnName = "merchandiseID", insertable = false, updatable = false),
+        @JoinColumn(name = "categoryID", referencedColumnName = "categoryID", insertable = false, updatable = false)})
+    @ManyToOne(optional = false)
+    private Merchandise merchandise;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "storeMerchandise")
+    private Collection<StoreUpperGarmentChoice> storeUpperGarmentChoiceCollection;
 
     public StoreMerchandise() {
     }
@@ -131,6 +131,31 @@ public class StoreMerchandise implements Serializable {
         this.merchandiseImage3 = merchandiseImage3;
     }
 
+    public Store getStore() {
+        return store;
+    }
+
+    public void setStore(Store store) {
+        this.store = store;
+    }
+
+    public Merchandise getMerchandise() {
+        return merchandise;
+    }
+
+    public void setMerchandise(Merchandise merchandise) {
+        this.merchandise = merchandise;
+    }
+
+    @XmlTransient
+    public Collection<StoreUpperGarmentChoice> getStoreUpperGarmentChoiceCollection() {
+        return storeUpperGarmentChoiceCollection;
+    }
+
+    public void setStoreUpperGarmentChoiceCollection(Collection<StoreUpperGarmentChoice> storeUpperGarmentChoiceCollection) {
+        this.storeUpperGarmentChoiceCollection = storeUpperGarmentChoiceCollection;
+    }
+
     @Override
     public int hashCode() {
         int hash = 0;
@@ -154,31 +179,6 @@ public class StoreMerchandise implements Serializable {
     @Override
     public String toString() {
         return "bean.StoreMerchandise[ storeMerchandisePK=" + storeMerchandisePK + " ]";
-    }
-
-    public Store getStore() {
-        return store;
-    }
-
-    public void setStore(Store store) {
-        this.store = store;
-    }
-
-    public Merchandise getMerchandise() {
-        return merchandise;
-    }
-
-    public void setMerchandise(Merchandise merchandise) {
-        this.merchandise = merchandise;
-    }
-
-    @XmlTransient
-    public Collection<Storeuppergarmentchoice> getStoreuppergarmentchoiceCollection() {
-        return storeuppergarmentchoiceCollection;
-    }
-
-    public void setStoreuppergarmentchoiceCollection(Collection<Storeuppergarmentchoice> storeuppergarmentchoiceCollection) {
-        this.storeuppergarmentchoiceCollection = storeuppergarmentchoiceCollection;
     }
     
 }

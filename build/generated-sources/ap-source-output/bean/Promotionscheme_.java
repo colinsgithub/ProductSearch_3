@@ -1,7 +1,7 @@
 package bean;
 
-import bean.Promotionpreference;
-import bean.PromotionschemePK;
+import bean.PromotionPreference;
+import bean.PromotionSchemePK;
 import bean.Store;
 import java.util.Date;
 import javax.annotation.Generated;
@@ -9,15 +9,15 @@ import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-03-22T12:06:15")
-@StaticMetamodel(Promotionscheme.class)
-public class Promotionscheme_ { 
+@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-03-24T20:17:24")
+@StaticMetamodel(PromotionScheme.class)
+public class PromotionScheme_ { 
 
-    public static volatile SingularAttribute<Promotionscheme, Date> startDate;
-    public static volatile SingularAttribute<Promotionscheme, Store> store;
-    public static volatile SingularAttribute<Promotionscheme, String> description;
-    public static volatile SingularAttribute<Promotionscheme, PromotionschemePK> promotionschemePK;
-    public static volatile SingularAttribute<Promotionscheme, Date> endDate;
-    public static volatile CollectionAttribute<Promotionscheme, Promotionpreference> promotionpreferenceCollection;
+    public static volatile SingularAttribute<PromotionScheme, Date> startDate;
+    public static volatile SingularAttribute<PromotionScheme, Store> store;
+    public static volatile CollectionAttribute<PromotionScheme, PromotionPreference> promotionPreferenceCollection;
+    public static volatile SingularAttribute<PromotionScheme, String> description;
+    public static volatile SingularAttribute<PromotionScheme, Date> endDate;
+    public static volatile SingularAttribute<PromotionScheme, PromotionSchemePK> promotionSchemePK;
 
 }

@@ -793,7 +793,8 @@ body .ui-tooltip {
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-    font-family: Verdana,Arial,sans-serif/*{ffDefault}*/;
+    font-family: Raleway, sans-serif;
+    font-weight: 100;
     font-size: 1.1em/*{fsDefault}*/;
 }
 .ui-widget .ui-widget {

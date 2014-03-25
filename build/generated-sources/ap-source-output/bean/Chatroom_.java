@@ -8,17 +8,17 @@ import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-03-22T12:06:15")
-@StaticMetamodel(Chatroom.class)
-public class Chatroom_ { 
+@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-03-24T20:17:24")
+@StaticMetamodel(ChatRoom.class)
+public class ChatRoom_ { 
 
-    public static volatile SingularAttribute<Chatroom, String> roomDesc;
-    public static volatile SingularAttribute<Chatroom, String> roomName;
-    public static volatile SingularAttribute<Chatroom, String> roomImage;
-    public static volatile SingularAttribute<Chatroom, User> administrator;
-    public static volatile SingularAttribute<Chatroom, User> owner;
-    public static volatile SingularAttribute<Chatroom, Date> creationTime;
-    public static volatile CollectionAttribute<Chatroom, Message> messageCollection;
-    public static volatile SingularAttribute<Chatroom, Integer> roomID;
+    public static volatile SingularAttribute<ChatRoom, String> roomDesc;
+    public static volatile SingularAttribute<ChatRoom, String> roomName;
+    public static volatile SingularAttribute<ChatRoom, String> roomImage;
+    public static volatile SingularAttribute<ChatRoom, User> administrator;
+    public static volatile SingularAttribute<ChatRoom, User> owner;
+    public static volatile SingularAttribute<ChatRoom, Date> creationTime;
+    public static volatile CollectionAttribute<ChatRoom, Message> messageCollection;
+    public static volatile SingularAttribute<ChatRoom, Integer> roomID;
 
 }

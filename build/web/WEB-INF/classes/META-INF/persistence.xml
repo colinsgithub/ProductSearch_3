@@ -36,6 +36,30 @@
     <class>bean.Uppergarment</class>
     <class>bean.Promotionpreference</class>
     <class>bean.PhonotapeAndVideotape</class>
+    <class>bean.Navigation</class>
+    <class>bean.FlashMemoryCard</class>
+    <class>bean.CPUManufacturer</class>
+    <class>bean.ConnectivityAndSharing</class>
+    <class>bean.PromotionScheme</class>
+    <class>bean.Mobile</class>
+    <class>bean.UpperGarment</class>
+    <class>bean.LowerGarment</class>
+    <class>bean.TouchScreenType</class>
+    <class>bean.WLANType</class>
+    <class>bean.StoreUpperGarmentChoice</class>
+    <class>bean.MachineInterface</class>
+    <class>bean.KeyboardType</class>
+    <class>bean.OperatingSystem</class>
+    <class>bean.CPUCoreType</class>
+    <class>bean.ScreenMaterial</class>
+    <class>bean.MobileNetworkStandard</class>
+    <class>bean.UserStatus</class>
+    <class>bean.PromotionPreference</class>
+    <class>bean.ChatRoom</class>
+    <class>bean.MobileType</class>
+    <class>bean.SIMCardType</class>
+    <class>bean.SensorType</class>
+    <class>bean.Flash</class>
     <exclude-unlisted-classes>false</exclude-unlisted-classes>
     <properties>
       <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/product?zeroDateTimeBehavior=convertToNull"/>

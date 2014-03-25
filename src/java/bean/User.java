@@ -24,36 +24,32 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author poonkaho
  */
 @Entity
-@Table(name = "user")
+@Table(name = "User")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
     @NamedQuery(name = "User.findByUserID", query = "SELECT u FROM User u WHERE u.userID = :userID"),
+    @NamedQuery(name = "User.findByUserName", query = "SELECT u FROM User u WHERE u.userName = :userName"),
     @NamedQuery(name = "User.findBySex", query = "SELECT u FROM User u WHERE u.sex = :sex"),
     @NamedQuery(name = "User.findByAge", query = "SELECT u FROM User u WHERE u.age = :age"),
     @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
     @NamedQuery(name = "User.findByCredit", query = "SELECT u FROM User u WHERE u.credit = :credit"),
     @NamedQuery(name = "User.findByRole", query = "SELECT u FROM User u WHERE u.role = :role")})
 public class User implements Serializable {
-    @OneToMany(mappedBy = "administrator")
-    private Collection<Chatroom> chatroomCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private Collection<Chatroom> chatroomCollection1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Collection<Promotionpreference> promotionpreferenceCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Collection<Message> messageCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @Basic(optional = false)
     @Column(name = "userID")
     private String userID;
     @Basic(optional = false)
+    @Column(name = "userName")
+    private String userName;
+    @Basic(optional = false)
     @Lob
     @Column(name = "password")
     private String password;
     @Column(name = "sex")
-    private Character sex;
+    private String sex;
     @Column(name = "age")
     private Integer age;
     @Basic(optional = false)
@@ -77,12 +73,20 @@ public class User implements Serializable {
     private String preference;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID")
     private Collection<Store> storeCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Collection<Userstatus> userstatusCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID")
     private Collection<Tag> tagCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
+    private Collection<ChatRoom> chatRoomCollection;
+    @OneToMany(mappedBy = "administrator")
+    private Collection<ChatRoom> chatRoomCollection1;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<Message> messageCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Comment> commentCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<UserStatus> userStatusCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
+    private Collection<PromotionPreference> promotionPreferenceCollection;
 
     public User() {
     }
@@ -91,8 +95,9 @@ public class User implements Serializable {
         this.userID = userID;
     }
 
-    public User(String userID, String password, String email, String avatar, double credit, String role) {
+    public User(String userID, String userName, String password, String email, String avatar, double credit, String role) {
         this.userID = userID;
+        this.userName = userName;
         this.password = password;
         this.email = email;
         this.avatar = avatar;
@@ -108,6 +113,14 @@ public class User implements Serializable {
         this.userID = userID;
     }
 
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public String getPassword() {
         return password;
     }
@@ -116,11 +129,11 @@ public class User implements Serializable {
         this.password = password;
     }
 
-    public Character getSex() {
+    public String getSex() {
         return sex;
     }
 
-    public void setSex(Character sex) {
+    public void setSex(String sex) {
         this.sex = sex;
     }
 
@@ -190,15 +203,6 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Userstatus> getUserstatusCollection() {
-        return userstatusCollection;
-    }
-
-    public void setUserstatusCollection(Collection<Userstatus> userstatusCollection) {
-        this.userstatusCollection = userstatusCollection;
-    }
-
-    @XmlTransient
     public Collection<Tag> getTagCollection() {
         return tagCollection;
     }
@@ -208,12 +212,57 @@ public class User implements Serializable {
     }
 
     @XmlTransient
+    public Collection<ChatRoom> getChatRoomCollection() {
+        return chatRoomCollection;
+    }
+
+    public void setChatRoomCollection(Collection<ChatRoom> chatRoomCollection) {
+        this.chatRoomCollection = chatRoomCollection;
+    }
+
+    @XmlTransient
+    public Collection<ChatRoom> getChatRoomCollection1() {
+        return chatRoomCollection1;
+    }
+
+    public void setChatRoomCollection1(Collection<ChatRoom> chatRoomCollection1) {
+        this.chatRoomCollection1 = chatRoomCollection1;
+    }
+
+    @XmlTransient
+    public Collection<Message> getMessageCollection() {
+        return messageCollection;
+    }
+
+    public void setMessageCollection(Collection<Message> messageCollection) {
+        this.messageCollection = messageCollection;
+    }
+
+    @XmlTransient
     public Collection<Comment> getCommentCollection() {
         return commentCollection;
     }
 
     public void setCommentCollection(Collection<Comment> commentCollection) {
         this.commentCollection = commentCollection;
+    }
+
+    @XmlTransient
+    public Collection<UserStatus> getUserStatusCollection() {
+        return userStatusCollection;
+    }
+
+    public void setUserStatusCollection(Collection<UserStatus> userStatusCollection) {
+        this.userStatusCollection = userStatusCollection;
+    }
+
+    @XmlTransient
+    public Collection<PromotionPreference> getPromotionPreferenceCollection() {
+        return promotionPreferenceCollection;
+    }
+
+    public void setPromotionPreferenceCollection(Collection<PromotionPreference> promotionPreferenceCollection) {
+        this.promotionPreferenceCollection = promotionPreferenceCollection;
     }
 
     @Override
@@ -239,42 +288,6 @@ public class User implements Serializable {
     @Override
     public String toString() {
         return "bean.User[ userID=" + userID + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Chatroom> getChatroomCollection() {
-        return chatroomCollection;
-    }
-
-    public void setChatroomCollection(Collection<Chatroom> chatroomCollection) {
-        this.chatroomCollection = chatroomCollection;
-    }
-
-    @XmlTransient
-    public Collection<Chatroom> getChatroomCollection1() {
-        return chatroomCollection1;
-    }
-
-    public void setChatroomCollection1(Collection<Chatroom> chatroomCollection1) {
-        this.chatroomCollection1 = chatroomCollection1;
-    }
-
-    @XmlTransient
-    public Collection<Promotionpreference> getPromotionpreferenceCollection() {
-        return promotionpreferenceCollection;
-    }
-
-    public void setPromotionpreferenceCollection(Collection<Promotionpreference> promotionpreferenceCollection) {
-        this.promotionpreferenceCollection = promotionpreferenceCollection;
-    }
-
-    @XmlTransient
-    public Collection<Message> getMessageCollection() {
-        return messageCollection;
-    }
-
-    public void setMessageCollection(Collection<Message> messageCollection) {
-        this.messageCollection = messageCollection;
     }
     
 }

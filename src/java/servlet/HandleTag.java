@@ -4,6 +4,7 @@
  */
 package servlet;
 
+import bean.Store;
 import bean.Tag;
 import bean.User;
 import java.io.IOException;
@@ -62,8 +63,8 @@ public class HandleTag extends HttpServlet {
 
                 for (int x = 0; x < tags.size(); x++) {
                     store = new JSONObject();
-                    store.put("storeName", tags.get(x).getStore().getStoreName());
-                    store.put("storeId", tags.get(x).getStore().getStoreID());
+                    store.put("storeName", tags.get(x).getStoreID().getStoreName());
+                    store.put("storeId", tags.get(x).getStoreID().getStoreID());
                     array.put(store);
                     //stack overflow easily happens
                 }
@@ -88,7 +89,13 @@ public class HandleTag extends HttpServlet {
                 EntityManager em = factory.createEntityManager();
                 em.getTransaction().begin();
 
-                Tag tag = new Tag(user.getUserID(), Integer.parseInt(storeId), new Date());
+                Tag tag = new Tag();
+                tag.setTagID(1);
+                tag.setCreationTime(new Date());
+                tag.setUserID(user);
+                
+                
+                tag.setStoreID(em.find(Store.class, Integer.parseInt(storeId)));
                 em.persist(tag);
 
                 User newUser = em.find(User.class, user.getUserID());
@@ -121,11 +128,12 @@ public class HandleTag extends HttpServlet {
                 
                 ArrayList<Tag> tags = new ArrayList<Tag>(user.getTagCollection());
                 for (int x = 0; x < tags.size() ; x++) {
-                    if (storeId.equalsIgnoreCase("" + tags.get(x).getStore().getStoreID())) {
+                    if (storeId.equalsIgnoreCase("" + tags.get(x).getStoreID().getStoreID())) {
                         Tag tag = em.merge(tags.get(x));
                         em.remove(tag);
                     }
-                } 
+                }
+                
                 User newUser = em.find(User.class, user.getUserID());
                 httpSession.setAttribute("user", newUser);
                 //renew the bean.user in user

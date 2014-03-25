@@ -30,21 +30,16 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author poonkaho
  */
 @Entity
-@Table(name = "merchandise")
+@Table(name = "Merchandise")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Merchandise.findAll", query = "SELECT m FROM Merchandise m"),
     @NamedQuery(name = "Merchandise.findByMerchandiseID", query = "SELECT m FROM Merchandise m WHERE m.merchandisePK.merchandiseID = :merchandiseID"),
     @NamedQuery(name = "Merchandise.findByCategoryID", query = "SELECT m FROM Merchandise m WHERE m.merchandisePK.categoryID = :categoryID"),
     @NamedQuery(name = "Merchandise.findByMerchandiseName", query = "SELECT m FROM Merchandise m WHERE m.merchandiseName = :merchandiseName"),
-    @NamedQuery(name = "Merchandise.findByListingYear", query = "SELECT m FROM Merchandise m WHERE m.listingYear = :listingYear")})
+    @NamedQuery(name = "Merchandise.findByListingYear", query = "SELECT m FROM Merchandise m WHERE m.listingYear = :listingYear"),
+    @NamedQuery(name = "Merchandise.findByReferenceLink", query = "SELECT m FROM Merchandise m WHERE m.referenceLink = :referenceLink")})
 public class Merchandise implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "merchandise")
-    private Collection<StoreMerchandise> storeMerchandiseCollection;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "merchandise")
-    private Cloth cloth;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "merchandise")
-    private PhonotapeAndVideotape phonotapeAndVideotape;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected MerchandisePK merchandisePK;
@@ -61,12 +56,20 @@ public class Merchandise implements Serializable {
     @Column(name = "listingYear")
     @Temporal(TemporalType.DATE)
     private Date listingYear;
+    @Column(name = "referenceLink")
+    private String referenceLink;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "merchandise")
+    private Collection<StoreMerchandise> storeMerchandiseCollection;
+    @JoinColumn(name = "brandID", referencedColumnName = "brandID")
+    @ManyToOne(optional = false)
+    private Brand brandID;
     @JoinColumn(name = "categoryID", referencedColumnName = "categoryID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Category category;
-    @JoinColumn(name = "brandID", referencedColumnName = "brandID")
-    @ManyToOne
-    private Brand brandID;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "merchandise")
+    private Collection<Mobile> mobileCollection;
+    @OneToOne(cascade = CascadeType.ALL, mappedBy = "merchandise")
+    private Cloth cloth;
 
     public Merchandise() {
     }
@@ -125,12 +128,21 @@ public class Merchandise implements Serializable {
         this.listingYear = listingYear;
     }
 
-    public Category getCategory() {
-        return category;
+    public String getReferenceLink() {
+        return referenceLink;
     }
 
-    public void setCategory(Category category) {
-        this.category = category;
+    public void setReferenceLink(String referenceLink) {
+        this.referenceLink = referenceLink;
+    }
+
+    @XmlTransient
+    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
+        return storeMerchandiseCollection;
+    }
+
+    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
+        this.storeMerchandiseCollection = storeMerchandiseCollection;
     }
 
     public Brand getBrandID() {
@@ -139,6 +151,31 @@ public class Merchandise implements Serializable {
 
     public void setBrandID(Brand brandID) {
         this.brandID = brandID;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    @XmlTransient
+    public Collection<Mobile> getMobileCollection() {
+        return mobileCollection;
+    }
+
+    public void setMobileCollection(Collection<Mobile> mobileCollection) {
+        this.mobileCollection = mobileCollection;
+    }
+
+    public Cloth getCloth() {
+        return cloth;
+    }
+
+    public void setCloth(Cloth cloth) {
+        this.cloth = cloth;
     }
 
     @Override
@@ -164,31 +201,6 @@ public class Merchandise implements Serializable {
     @Override
     public String toString() {
         return "bean.Merchandise[ merchandisePK=" + merchandisePK + " ]";
-    }
-
-    @XmlTransient
-    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
-        return storeMerchandiseCollection;
-    }
-
-    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
-        this.storeMerchandiseCollection = storeMerchandiseCollection;
-    }
-
-    public Cloth getCloth() {
-        return cloth;
-    }
-
-    public void setCloth(Cloth cloth) {
-        this.cloth = cloth;
-    }
-
-    public PhonotapeAndVideotape getPhonotapeAndVideotape() {
-        return phonotapeAndVideotape;
-    }
-
-    public void setPhonotapeAndVideotape(PhonotapeAndVideotape phonotapeAndVideotape) {
-        this.phonotapeAndVideotape = phonotapeAndVideotape;
     }
     
 }

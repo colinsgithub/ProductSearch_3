@@ -119,6 +119,7 @@ public class HandleUser extends HttpServlet {
 
             Map map = new HashMap();
             map.put("userID", user.getUserID());
+            map.put("userName", user.getUserName());
             map.put("sex", user.getSex());
             map.put("age", user.getAge());
             map.put("email", user.getEmail());
@@ -154,6 +155,7 @@ public class HandleUser extends HttpServlet {
         } else if ("getUserInfo".equalsIgnoreCase(action)) {
             HttpSession httpSession = request.getSession();
             User user = (User) httpSession.getAttribute("user");
+            
 
             EntityManagerFactory factory = Persistence.createEntityManagerFactory("ProductSearch_3PU");
             EntityManager em = factory.createEntityManager();
@@ -162,12 +164,49 @@ public class HandleUser extends HttpServlet {
             em.getTransaction().commit();
             em.close();
             factory.close();
-            
+
             request.setAttribute("user", user);
 
             RequestDispatcher rd;
             rd = getServletContext().getRequestDispatcher("/personalInfo.jsp");
             rd.forward(request, response);
+        } else if ("updateUser".equalsIgnoreCase(action)) {
+            
+            System.out.println("*****");
+            String colum = request.getParameter("name");
+            String value = request.getParameter("value");
+            
+            System.out.println(colum);
+            System.out.println(value);
+            System.out.println("*****");
+            
+            
+            
+            HttpSession httpSession = request.getSession(false);
+            User user = (User) httpSession.getAttribute("user");
+
+            EntityManagerFactory factory = Persistence.createEntityManagerFactory("ProductSearch_3PU");
+            EntityManager em = factory.createEntityManager();
+            em.getTransaction().begin();
+
+            Query updateQuery = em.createQuery("UPDATE User s SET s." + colum + " = :value WHERE s.userID = :userID");
+            updateQuery.setParameter("value", value);
+            updateQuery.setParameter("userID", user.getUserID());
+            int updated = updateQuery.executeUpdate();
+            /*
+            User newUser = em.find(User.class, user.getUserID());
+            newUser.setUserName(value);
+            em.merge(newUser);
+            */
+            
+            User newUser = em.find(User.class, user.getUserID());
+            
+            em.getTransaction().commit();
+            em.close();
+            factory.close();
+            
+            httpSession.setAttribute("user", newUser);
+
         } else {
             PrintWriter out = response.getWriter();
             out.println("No such action!!!");

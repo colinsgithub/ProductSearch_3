@@ -23,7 +23,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * @author poonkaho
  */
 @Entity
-@Table(name = "comment")
+@Table(name = "Comment")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Comment.findAll", query = "SELECT c FROM Comment c"),
@@ -42,12 +42,12 @@ public class Comment implements Serializable {
     @Basic(optional = false)
     @Column(name = "rank")
     private short rank;
-    @JoinColumn(name = "userID", referencedColumnName = "userID", insertable = false, updatable = false)
-    @ManyToOne(optional = false)
-    private User user;
     @JoinColumn(name = "storeID", referencedColumnName = "storeID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Store store;
+    @JoinColumn(name = "userID", referencedColumnName = "userID", insertable = false, updatable = false)
+    @ManyToOne(optional = false)
+    private User user;
 
     public Comment() {
     }
@@ -90,20 +90,20 @@ public class Comment implements Serializable {
         this.rank = rank;
     }
 
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
-
     public Store getStore() {
         return store;
     }
 
     public void setStore(Store store) {
         this.store = store;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override

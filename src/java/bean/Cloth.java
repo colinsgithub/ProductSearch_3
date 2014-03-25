@@ -27,7 +27,7 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author poonkaho
  */
 @Entity
-@Table(name = "cloth")
+@Table(name = "Cloth")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Cloth.findAll", query = "SELECT c FROM Cloth c"),
@@ -77,12 +77,14 @@ public class Cloth implements Serializable {
     @Column(name = "subStyle")
     private String subStyle;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "cloth")
-    private Collection<Uppergarment> uppergarmentCollection;
+    private Collection<LowerGarment> lowerGarmentCollection;
     @JoinColumns({
         @JoinColumn(name = "clothID", referencedColumnName = "merchandiseID", insertable = false, updatable = false),
         @JoinColumn(name = "categoryID", referencedColumnName = "categoryID", insertable = false, updatable = false)})
     @OneToOne(optional = false)
     private Merchandise merchandise;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "cloth")
+    private Collection<UpperGarment> upperGarmentCollection;
 
     public Cloth() {
     }
@@ -202,12 +204,12 @@ public class Cloth implements Serializable {
     }
 
     @XmlTransient
-    public Collection<Uppergarment> getUppergarmentCollection() {
-        return uppergarmentCollection;
+    public Collection<LowerGarment> getLowerGarmentCollection() {
+        return lowerGarmentCollection;
     }
 
-    public void setUppergarmentCollection(Collection<Uppergarment> uppergarmentCollection) {
-        this.uppergarmentCollection = uppergarmentCollection;
+    public void setLowerGarmentCollection(Collection<LowerGarment> lowerGarmentCollection) {
+        this.lowerGarmentCollection = lowerGarmentCollection;
     }
 
     public Merchandise getMerchandise() {
@@ -216,6 +218,15 @@ public class Cloth implements Serializable {
 
     public void setMerchandise(Merchandise merchandise) {
         this.merchandise = merchandise;
+    }
+
+    @XmlTransient
+    public Collection<UpperGarment> getUpperGarmentCollection() {
+        return upperGarmentCollection;
+    }
+
+    public void setUpperGarmentCollection(Collection<UpperGarment> upperGarmentCollection) {
+        this.upperGarmentCollection = upperGarmentCollection;
     }
 
     @Override

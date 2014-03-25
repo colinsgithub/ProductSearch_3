@@ -28,14 +28,12 @@ import javax.xml.bind.annotation.XmlTransient;
  * @author poonkaho
  */
 @Entity
-@Table(name = "category")
+@Table(name = "Category")
 @XmlRootElement
 @NamedQueries({
     @NamedQuery(name = "Category.findAll", query = "SELECT c FROM Category c"),
     @NamedQuery(name = "Category.findByCategoryID", query = "SELECT c FROM Category c WHERE c.categoryID = :categoryID")})
 public class Category implements Serializable {
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
-    private Collection<Merchandise> merchandiseCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -52,13 +50,15 @@ public class Category implements Serializable {
     @Lob
     @Column(name = "categoryDesc")
     private String categoryDesc;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoryID")
+    private Collection<Store> storeCollection;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "category")
+    private Collection<Merchandise> merchandiseCollection;
     @OneToMany(mappedBy = "parentID")
     private Collection<Category> categoryCollection;
     @JoinColumn(name = "parentID", referencedColumnName = "categoryID")
     @ManyToOne
     private Category parentID;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "categoryID")
-    private Collection<Store> storeCollection;
 
     public Category() {
     }
@@ -105,6 +105,24 @@ public class Category implements Serializable {
     }
 
     @XmlTransient
+    public Collection<Store> getStoreCollection() {
+        return storeCollection;
+    }
+
+    public void setStoreCollection(Collection<Store> storeCollection) {
+        this.storeCollection = storeCollection;
+    }
+
+    @XmlTransient
+    public Collection<Merchandise> getMerchandiseCollection() {
+        return merchandiseCollection;
+    }
+
+    public void setMerchandiseCollection(Collection<Merchandise> merchandiseCollection) {
+        this.merchandiseCollection = merchandiseCollection;
+    }
+
+    @XmlTransient
     public Collection<Category> getCategoryCollection() {
         return categoryCollection;
     }
@@ -119,15 +137,6 @@ public class Category implements Serializable {
 
     public void setParentID(Category parentID) {
         this.parentID = parentID;
-    }
-
-    @XmlTransient
-    public Collection<Store> getStoreCollection() {
-        return storeCollection;
-    }
-
-    public void setStoreCollection(Collection<Store> storeCollection) {
-        this.storeCollection = storeCollection;
     }
 
     @Override
@@ -153,15 +162,6 @@ public class Category implements Serializable {
     @Override
     public String toString() {
         return "bean.Category[ categoryID=" + categoryID + " ]";
-    }
-
-    @XmlTransient
-    public Collection<Merchandise> getMerchandiseCollection() {
-        return merchandiseCollection;
-    }
-
-    public void setMerchandiseCollection(Collection<Merchandise> merchandiseCollection) {
-        this.merchandiseCollection = merchandiseCollection;
     }
     
 }

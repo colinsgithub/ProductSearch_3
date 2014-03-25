@@ -1,14 +1,15 @@
 package bean;
 
 import bean.ClothPK;
+import bean.LowerGarment;
 import bean.Merchandise;
-import bean.Uppergarment;
+import bean.UpperGarment;
 import javax.annotation.Generated;
 import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-03-22T12:06:15")
+@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-03-24T20:17:24")
 @StaticMetamodel(Cloth.class)
 public class Cloth_ { 
 
@@ -16,7 +17,7 @@ public class Cloth_ {
     public static volatile SingularAttribute<Cloth, String> sex;
     public static volatile SingularAttribute<Cloth, Merchandise> merchandise;
     public static volatile SingularAttribute<Cloth, String> occasion;
-    public static volatile CollectionAttribute<Cloth, Uppergarment> uppergarmentCollection;
+    public static volatile CollectionAttribute<Cloth, UpperGarment> upperGarmentCollection;
     public static volatile SingularAttribute<Cloth, ClothPK> clothPK;
     public static volatile SingularAttribute<Cloth, Double> fabricContent;
     public static volatile SingularAttribute<Cloth, String> season;
@@ -26,5 +27,6 @@ public class Cloth_ {
     public static volatile SingularAttribute<Cloth, String> thickness;
     public static volatile SingularAttribute<Cloth, String> basicStyle;
     public static volatile SingularAttribute<Cloth, String> fabric;
+    public static volatile CollectionAttribute<Cloth, LowerGarment> lowerGarmentCollection;
 
 }
