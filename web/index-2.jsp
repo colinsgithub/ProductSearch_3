@@ -16,7 +16,7 @@
             body {
                 min-width: 1200px;
                 min-height: 600px;
-                
+
             }
 
             .labels {
@@ -119,19 +119,6 @@
                 background: -webkit-linear-gradient(top, rgba(200,200,200,1) 0%,rgba(191,191,191,1) 100%);
             }
 
-            #rightArrow {
-                -webkit-filter: blur(1px); /* Chrome, Opera */
-                -moz-filter: blur(1px);
-                -ms-filter: blur(1px);    
-                filter: blur(1px);
-            }
-
-            #rightArrow:hover {
-                -webkit-filter: blur(0px); /* Chrome, Opera */
-                -moz-filter: blur(0px);
-                -ms-filter: blur(0px);    
-                filter: blur(0px);
-            }
             .ui-dialog {
                 -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
                 box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
@@ -203,23 +190,34 @@
                 -webkit-box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.300);
                 box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.300);
             }
+
+
+            .controlArrow.next {
+                display: none;
+                right: 15px;
+                border-width: 38.5px 0 38.5px 34px;
+                border-color: transparent transparent transparent #fff;
+            }
+
+            .controlArrow {
+                cursor: pointer;
+                width: 0;
+                height: 0;
+                border-style: solid;
+            }
+
         </style>
 
-        <script src="js/pace.min.js"></script>
-        <link href='http://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
 
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+        <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyBQTZl_t-QrF8ExPfToPAjeclIf1DUZ2jc&key=AIzaSyBQTZl_t-QrF8ExPfToPAjeclIf1DUZ2jc&libraries=geometry,places&sensor=false"></script>
 
-
-        <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyBQTZl_t-QrF8ExPfToPAjeclIf1DUZ2jc&sensor=true"></script>
-
-        <script src="http://maps.google.com/maps/api/js?sensor=false&v=3&libraries=geometry"></script>
-
-        <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false&libraries=places"></script>
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <%-- draw bar api--%>
 
         <script src="js/markerwithlabel.js"></script>
+        <script src="js/pace.min.js"></script>
 
-
+        <link href='http://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
 
         <%--source from JQuery UI--%>
 
@@ -324,25 +322,6 @@
                 deleteOverlays(); //remove previous markers
 
 
-
-                $('#mainContent #Grid').remove(); //removre stores list
-                $('#mainContent #sortList').remove();
-                $('#mainContent').append(
-                        '<div id="sortList" style=" margin: 10px;">' +
-                        '<table><tr>' +
-                        '<td><div class="sort" style="visibility:visible;position:absolute;" data-sort="data-name" data-order="desc">Name Desc</div>' +
-                        '<div class="sort" style="visibility:hidden;" data-sort="data-name" data-order="asc">Name Asc</div></td>' +
-                        '<td><div class="sort" style="visibility:visible;position:absolute;" data-sort="data-rank" data-order="desc">Rank Desc</div>' +
-                        '<div class="sort" style="visibility:hidden;" data-sort="data-rank" data-order="asc">Rank Asc</div></td>' +
-                        '<td><div class="sort" style="visibility:visible;position:absolute;" data-sort="data-distance" data-order="desc">Distance Desc</div>' +
-                        '<div class="sort" style="visibility:hidden;" data-sort="data-distance" data-order="asc">Distance Asc</div><td>' +
-                        //'<td><div class="sort" data-sort="default" data-order="asc">Default</div></td>' +
-                        '</tr><table></div>');
-                $('#mainContent').append("<ul style='padding-left: 0px;' id='Grid'></ul>");
-                $('.sort').click(function(event) {
-                    $(event.target).siblings('div').css('visibility', 'visible');
-                    $(event.target).css('visibility', 'hidden');
-                });
             <%
                 String lat = "";
                 String lng = "";
@@ -368,11 +347,13 @@
                         out.println("storeRank = '" + stores.get(x).getRank() + "'");
                         out.println("storePhoneNumber = '" + stores.get(x).getPhoneNumber() + "'");
                         out.println("storeAddress = '" + stores.get(x).getAddress() + "'");
+                        out.println("storeAvatar = '" + stores.get(x).getStoreAvatar() + "'");
                         //out.println("verfiyRange(radius, latLngWithInRangeArray, latLngB, storeName, storeId);");
                         out.println("dropMarker(latLngB);");
 
                     }
-                    out.println("$('#Grid').mixitup();");
+
+                    out.println("createList();");
                 }
             %>
             }
@@ -391,7 +372,10 @@
                         new google.maps.Size(21, 34),
                         new google.maps.Point(0, 0),
                         new google.maps.Point(10, 34));
+
+
                 distanceWithMarker1 = google.maps.geometry.spherical.computeDistanceBetween(marker1.getPosition(), latLngB);
+
                 var distance = google.maps.geometry.spherical.computeDistanceBetween(map.getCenter(), latLngB);
                 if (distance < cityCircle.getRadius()) {
 
@@ -399,11 +383,18 @@
                         map: map,
                         position: latLngB,
                         content: 'Store',
-                        name: storeName,
+                        name: (storeName).toUpperCase(),
                         distance: parseInt(distanceWithMarker1),
-                        cover: "storeImg/logo.jpg",
+                        cover: storeAvatar,
+                        storeID: storeId,
                         rank: storeRank,
                         icon: pinImage,
+                        storeAddress: storeAddress,
+                        storePhoneNumber: storePhoneNumber,<%--shape: {
+                            coords: [0, 0, 20],
+                            type: "circle"
+                        },
+            --%>
                         labelContent: "1",
                         labelAnchor: new google.maps.Point(20, 30),
                         labelClass: "labels", // the CSS class for the label
@@ -413,12 +404,11 @@
                         //alert('Marker Click');
                         cityCircle.setCenter(marker.getPosition());
                         //map.panTo(marker.getPosition());
-                        map.setZoom(map.getZoom() + 1);
+                        //map.setZoom(map.getZoom() + 1);
                     });
                     var markerRecord = true;
                     if (markersArray.length !== 0) {
                         for (i in markersArray) {
-
                             var distanceBetStores = google.maps.geometry.spherical.computeDistanceBetween(markersArray[i].getPosition(), marker.getPosition());
                             if (distanceBetStores < (cityCircle.getRadius() * 0.15)) {
                                 markersArray[i].labelContent = parseInt(markersArray[i].labelContent) + 1;
@@ -428,54 +418,44 @@
                                         new google.maps.Point(10, 34)));
                                 //Change the overlayed marker to another color
 
-
                                 markersArray[i][0].push(marker);
                                 marker.setMap(null);
                                 markerRecord = false;
-                                var infoList = "<div style='height:165px;overflow-x:auto'><table style='width:250px;margin:7px;'>";
-                                for (x in markersArray[i][0]) {
-                                    infoList +=
-                                            "<tr>" +
-                                            "<td rowspan='3'><img style='width:50px;border-radius: 10px;' src='" + markersArray[i][0][x].cover + "'/></td>" +
-                                            "<td style='font-size:20px;height:20px;'>" + markersArray[i][0][x].name + "</td>" +
-                                            "</tr>" +
-                                            "<tr>" +
-                                            "<td style='display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='height:25px;margin-left:10px;'>" + markersArray[i][0][x].distance + "m<div></td>" +
-                                            "</tr>" +
-                                            "<tr><td><div class='rank'><div id='score' style='cursor:pointer;width:100px;'>";
-                                    var displayRank = parseInt(parseInt(markersArray[i][0][x].rank) / 100 * 5);
-                                    var grade = ["Bad", "Poor", "Regular", "Good", "Gorgeous"];
-                                    for (var x = 0; x < displayRank; x++) {
-                                        infoList += "<img style='width:20px;' src='lib/img/star-on.png' alt='1' title='" + grade[x] + "'>";
-                                    }
-                                    for (var x = displayRank; x < 5; x++) {
-                                        infoList += "<img style='width:20px;' src='lib/img/star-off.png' alt='1' title='" + grade[x] + "'>";
-                                    }
-
-                                    infoList += "</div></td></tr>";
-                                }
-                                infoList += "</table></div>";
-                                addListOfInfoWindow(markersArray[i], infoList);
                                 break;
                             }
-
                         }
                     }
-
-
                     if (markerRecord) {
                         marker[0] = []; //marker creates a list to record others markers which is overlayed 
-                        marker[0].push(marker); //a list should incude the main marker;
+                        //marker[0].push(marker); //a list should incude the main marker;
                         markersArray.push(marker);
+                    }
+
+                    //all stores with radius
+                    //createListOfStores(parseInt(distance));
+                }
+
+
+
+            }
+
+            grade = ["Bad", "Poor", "Regular", "Good", "Gorgeous"];
+            function createList() {
+                if (markersArray.length === 0)// no marker on map, then return
+                    return;
+
+                for (var i in markersArray) {
+                    //window.console.log(markersArray[i][0].length);
+                    if (markersArray[i][0].length === 0) {
                         var infoString =
                                 "<table id='storeInfoWindwo' style='width:330px;margin:10px;'>" +
                                 "<tr>" +
-                                "<td rowspan='7'><img  style = 'margin-right: 15px;' src='storeImg/logo.jpg' width='130px' height='130px'/></td>" +
-                                "<td style='font-size:30px;'>" + storeName + "</td>" +
+                                "<td rowspan='7'><img  style = 'border-radius: 6px;margin: 0 5px 0 10px;' src='" + markersArray[i].cover + "' width='130px' height='130px'/></td>" +
+                                "<td style='font-size:30px;'>" + markersArray[i].name + "</td>" +
                                 "</tr>" +
                                 "<tr><td><div class='rank'><div id='score' style='cursor:pointer;width:100px;'>";
-                        var displayRank = parseInt(parseInt(marker.rank) / 100 * 5);
-                        var grade = ["bad", "poor", "regular", "good", "gorgeous"];
+                        var displayRank = parseInt(parseInt(markersArray[i].rank) / 100 * 5);
+
                         for (var x = 0; x < displayRank; x++) {
                             infoString += "<img style='width:20px;' src='lib/img/star-on.png' alt='1' title='" + grade[x] + "'>";
                         }
@@ -483,23 +463,93 @@
                             infoString += "<img style='width:20px;' src='lib/img/star-off.png' alt='1' title='" + grade[x] + "'>";
                         }
 
-                        infoString += "<tr><td style='display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='margin: auto 0px auto 10px;'>" + parseInt(distanceWithMarker1) + "m</div></td></tr>";
+                        infoString += "<tr><td style='display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='margin: auto 0px auto 10px;'>" + markersArray[i].distance + "m</div></td></tr>";
                         infoString += "</div></td></tr>" +
-                                "<tr><td><button id='enterStore' storeId='" + storeId + "' onclick='directEnterStore(this);'>Enter Store</button></td></tr>" +
+                                "<tr><td><button id='enterStore' storeId='" + markersArray[i].storeID + "' onclick='directEnterStore(this);'>Enter Store</button></td></tr>" +
                                 "<tr><td><button onclick='sizeCenterPane();'>Stores List</button></td></tr>" +
                                 //"<tr><td><a href=\"javascript:calcRoute(this);" + "\" x='" + "happy" + "'>Direct</a></td></tr>" +
-                                "<tr><td><button id='comment' storeId='" + storeId + "' onclick='comment(this);'>Comment</button></td></tr>" +
+                                "<tr><td><button id='comment' storeId='" + markersArray[i].storeID + "' onclick='comment(this);'>Comment</button></td></tr>" +
                                 "</table>";
-                        infoString += "<a storeId='" + storeId + "' onclick='addToFollowList(this);'><img style='width:25px;' src='icon/heart.png' ></a>";
-                        addInfoWindow(marker, infoString);
+                        infoString += "<a style='width:25px;height:25px;' storeId='" + markersArray[i].storeID + "' onclick='addToFollowList(this);'><img style='width:25px;' src='icon/heart.png' ></a>";
+                        var infoWindow = addInfoWindow(markersArray[i], infoString);
+
+
+                    } else {
+
+                        var infoList =
+                                "<div id='storeInfoWindowList' style='height:300px;overflow-x:auto'>" +
+                                //'<div id="chart_div"></div>' +
+                                "<table style='width:250px;margin:7px;'>";
+
+                        var sort_by = function(field, reverse, primer) {
+                            var key = primer ?
+                                    function(x) {
+                                        return primer(x[field]);
+                                    } :
+                                    function(x) {
+                                        return x[field];
+                                    };
+                            reverse = [-1, 1][+!!reverse];
+                            return function(a, b) {
+                                return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+                            };
+                        };
+
+                        var MarkerListForInfoBox = [];
+                        MarkerListForInfoBox.push(markersArray[i]);
+
+                        for (var x in markersArray[i][0]) {
+                            MarkerListForInfoBox.push(markersArray[i][0][x]);
+                        }
+
+                        MarkerListForInfoBox.sort(sort_by('rank', false, parseInt));
+
+
+                        markersArray[i]['Regular'] = 0;
+                        markersArray[i]['Good'] = 0;
+                        markersArray[i]['Gorgeous'] = 0;
+                        // for generate bar chart for reference
+
+                        for (var x in MarkerListForInfoBox) {
+                            infoList +=
+                                    "<tr>" +
+                                    "<td rowspan='3'><img style='margin:10px 10px 10px 0;width:75px;border-radius: 5px;' src='" + MarkerListForInfoBox[x].cover + "'/></td>" +
+                                    "<td style='font-size:20px;height:20px;'>" + MarkerListForInfoBox[x].name + "</td>" +
+                                    "</tr>" +
+                                    "<tr>" +
+                                    "<td style='display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='height:25px;margin-left:10px;'>" + MarkerListForInfoBox[x].distance + "m<div></td>" +
+                                    "</tr>" +
+                                    "<tr><td><div class='rank'><div id='score' style='cursor:pointer;width:100px;'>";
+                            var displayRank = parseInt(parseInt(MarkerListForInfoBox[x].rank) / 100 * 5);
+
+                            if (displayRank <= 3) {
+                                markersArray[i]['Regular']++;
+                            } else if (displayRank === 4) {
+                                markersArray[i]['Good']++;
+                            } else {
+                                markersArray[i]['Gorgeous']++;
+                            }
+
+                            for (var x = 0; x < displayRank; x++) {
+                                infoList += "<img style='width:20px;' src='lib/img/star-on.png' alt='1' title='" + grade[x] + "'>";
+                            }
+                            for (var x = displayRank; x < 5; x++) {
+                                infoList += "<img style='width:20px;' src='lib/img/star-off.png' alt='1' title='" + grade[x] + "'>";
+                            }
+
+                            infoList += "</div></td></tr>";
+                        }
+                        infoList += "</table></div>";
+
+                        var listOfInfoWindow = addListOfInfoWindow(markersArray[i], infoList);
                     }
-
-                    //all stores with radius
-                    createListOfStores(parseInt(distance));
                 }
+                createMarkersPageList();
+                //right panel data 
+            }
 
-
-
+            function comment(obj) {
+                alert("GET COMMENT REQUEST! Store ID : " + $(obj).attr('storeId'));
             }
 
             function addToFollowList(obj) {
@@ -587,43 +637,32 @@
 
                 return {
                     addBookmark: addBookmark
-                }
+                };
             }();
 
             function cancelTag(obj) {
-
                 $.ajax({
-                    url: 'HandleTag?action=cancelTag&' + 'storeId=' + $(obj).parent().attr('storeId'),
+                    url: 'HandleTag?action=cancelTag&' + 'tagId=' + $(obj).parent().attr('tagId'),
                     type: 'POST',
                     success: function(response) {
                         var isLogin = (response === 'false');
                         if (isLogin) {
                             $('#personalInfo').click();
                         } else {
-
                             $.ajax({
                                 url: 'HandleTag?action=getTags',
                                 type: 'POST',
                                 success: function(response) {
-                                    var isLogin = (response === 'false');
-                                    if (isLogin) {
-                                        $('#personalInfo').click();
-                                    } else {
-                                        $("#dialog-tagList").empty();
+                                        $("#tag-display").empty();
                                         var tags = JSON.parse(response);
                                         for (var x = 0; x < tags['tags'].length; x++) {
                                             var storeName = (tags['tags'][x]['storeName']).toUpperCase();
-                                            var storeId = (tags['tags'][x]['storeId']);
-                                            $("#dialog-tagList").append("<div storeId='" + storeId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
+                                            var tagId = (tags['tags'][x]['tagId']);
+                                            $("#tag-display").append("<div tagId='" + tagId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
                                         }
                                         $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
-                                    }
                                 }
                             });
-                            var isAdded = (response === 'true');
-                            if (isAdded) {
-
-                            }
                         }
                     }
                 });
@@ -657,30 +696,174 @@
                     return 2;
             }
 
-            function showRightArrow(obj) {
+            function RightArrow(obj) {
                 var x = $(obj).find('#rightArrow');
-                if ($(obj).find('#rightArrow').is(':hidden'))
+                if ($(obj).find('#rightArrow').is(':hidden')) {
                     x.show();
-                else
+                }
+                else {
                     x.hide();
+                }
+            }
+
+            function sortList(obj) {
+                var pageDisplayed = [];
+
+                for (var x in markerPageArray) {
+                    for (var y in markerPageArray[x])
+                        pageDisplayed.push(markerPageArray[x][y]);
+                }
+
+                //sort field function;
+                var sort_by = function(field, reverse, primer) {
+                    var key = primer ?
+                            function(x) {
+                                return primer(x[field]);
+                            } :
+                            function(x) {
+                                return x[field];
+                            };
+                    reverse = [-1, 1][+!!reverse];
+                    return function(a, b) {
+                        return a = key(a), b = key(b), reverse * ((a > b) - (b > a));
+                    };
+                };
+
+                var sortBy;
+                if (parseInt($(obj).attr('sortBy')) === 0) {
+                    sortBy = false;
+                    $(obj).attr('sortBy', 1);
+                } else {
+                    sortBy = true;
+                    $(obj).attr('sortBy', 0);
+                }
+
+
+                if ($(obj).html() === 'Name')
+                    pageDisplayed.sort(sort_by($(obj).attr('sortKey'), sortBy, function(a) {
+                        return a.toUpperCase();
+                    }));
+                else if ($(obj).html() === 'Distance' || $(obj).html() === 'Rank') {
+                    pageDisplayed.sort(sort_by($(obj).attr('sortKey'), sortBy, parseInt));
+                }
+
+                markerPageArray = [];// each page means an array
+
+                var page = [];
+                var countColumn = 0;
+                for (var x = 0; x < pageDisplayed.length; x++) {
+                    countColumn++;
+                    page.push(pageDisplayed[x]);
+
+                    if (countColumn === 5) {
+                        markerPageArray.push(page);
+                        page = [];
+                        countColumn = 0;
+                    }
+                }
+                if (page.length !== 0)
+                    markerPageArray.push(page);
+
+                createListOfStores();
             }
 
 
-            function createListOfStores(distance) {
-                $('#mainContent #Grid').append(
-                        "<li onmouseout='showRightArrow(this);' onmouseover='showRightArrow(this);' class='mix' id='rowStore' data-name='" + storeName + "' data-rank='2' data-distance='" + parseInt(distanceWithMarker1) + "'>" +
-                        "<div style='display: inline;'>" +
-                        "<table>" +
-                        "<tr><td></td><td style='font-size:34px;font-family: Roboto;'>" + storeName + "</td>" +
-                        "<td rowspan='5' width='32px;'><img onclick='viewMoreDetail(this);' id='rightArrow' storeId='" + storeId + "' style='display:none;' src='image/rightArrow.png'><td></tr>" +
-                        "<tr><td rowspan='4'><img style='width:90px;margin-right: 10px;' src='storeImg/logo.jpg'/></td>" +
-                        "<td style='font-size:17px;font-family: Roboto;display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='height:25px;margin-left:10px;'>" + parseInt(distanceWithMarker1) + "m</div></td></tr>" +
-                        "<tr><td style='font-size:17px;font-family: Roboto;display: flex;'><img style='margin-top: auto;height: 25px;margin-bottom: auto;' src='icon/location.png'/><div style='width:70%;margin-left:10px;'>" + storeAddress + "</div></td></tr>" +
-                        "<tr><td style='font-size:17px;font-family: Roboto;display: flex;'><img style='height:25px;' src='icon/contact.png'/><div style='height:25px;margin-left:10px;'>" + storePhoneNumber + "</div></td></tr>" +
-                        "</table>" +
-                        "</div>" +
-                        "<div style='text-align: right;'><button storeId='" + storeId + "' onclick='viewMoreDetail(this);'>More...</button></div>" +
-                        "</li >");
+            function createMarkersPageList() {
+                markerPageArray = [];// each page means an array
+                var page = [];
+                var countColumn = 0;
+                for (var x = 0; x < markersArray.length; x++) {
+                    countColumn++;
+                    page.push(markersArray[x]);
+                    if (countColumn === 5) {
+                        markerPageArray.push(page);
+                        page = [];
+                        countColumn = 0;
+                    }
+                    if (markersArray[x][0].length !== 0) {
+                        for (var y = 0; y < markersArray[x][0].length; y++) {
+                            countColumn++;
+                            page.push(markersArray[x][0][y]);
+
+                            if (countColumn === 5) {
+                                markerPageArray.push(page);
+                                page = [];
+                                countColumn = 0;
+                            }
+                        }
+                    }
+                }
+                if (page.length !== 0)
+                    markerPageArray.push(page);
+
+                createListOfStores();
+            }
+
+            function createListOfStores() {
+                //create a sort bar
+                $('#mainContent #Grid').remove(); //removre stores list
+                $('#mainContent').append("<ul style='padding-left: 0px;' id='Grid'></ul>");
+
+
+                $('#pageBox').remove();
+
+                var pageButton = "<div id='pageBox'><button onclick=changeListPage(this);>1</button>";
+                for (var x = 2; x <= markerPageArray.length; x++) {
+                    pageButton += "<button onclick=changeListPage(this)>" + x + "</button>";
+                }
+                pageButton += "</div>";
+
+                var pageDisplayed = markerPageArray[0];
+
+                for (var x = 0; x < pageDisplayed.length; x++) {
+
+                    $('#mainContent #Grid').append(
+                            "<li onmouseout='RightArrow(this);' onmouseover='RightArrow(this);' class='mix' id='rowStore' data-name='" + pageDisplayed[x].name + "' data-rank='2' data-distance='" + pageDisplayed[x].distanceWithMarker1 + "'>" +
+                            "<div style='display: inline;'>" +
+                            "<table style='width:380px;'>" +
+                            "<tr><td></td><td style='font-size:25px;font-family: Roboto;'>" + pageDisplayed[x].name + "</td>" +
+                            "<td rowspan='5' width='40px;font-weight: 600;'><div id='rightArrow' class='controlArrow next' storeId='" + pageDisplayed[x].storeId + "' onclick='viewMoreDetail(this);'></div><td></tr>" +
+                            "<tr><td rowspan='4'><img style='width:90px;margin-right: 10px;border-radius: 5px;' src='" + pageDisplayed[x].cover + "'/></td>" +
+                            "<td style='font-size:15px;font-family: Roboto;display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='height:25px;margin-left:10px;'>" + pageDisplayed[x].distance + "m</div></td></tr>" +
+                            "<tr><td style='font-size:15px;font-family: Roboto;display: flex;'><img style='margin-top: auto;height: 25px;margin-bottom: auto;' src='icon/location.png'/><div style='width:70%;margin-left:10px;'>" + pageDisplayed[x].storeAddress + "</div></td></tr>" +
+                            "<tr><td style='font-size:15px;font-family: Roboto;display: flex;'><img style='height:25px;' src='icon/contact.png'/><div style='height:25px;margin-left:10px;'>" + pageDisplayed[x].storePhoneNumber + "</div></td></tr>" +
+                            "</table>" +
+                            "</div>" +
+                            "</li >"
+                            );
+                }
+                $('#Grid').mixitup();
+                $('#mainContent').append(pageButton);
+            }
+
+            function changeListPage(obj) {
+                $('#mainContent #Grid').remove(); //removre stores list
+                $('#mainContent').append("<ul style='padding-left: 0px;' id='Grid'></ul>");
+
+                var pageNum = parseInt($(obj).html()) - 1;
+
+                var pageDisplayed = markerPageArray[pageNum];
+
+                for (var x = 0; x < pageDisplayed.length; x++) {
+
+                    $('#mainContent #Grid').append(
+                            "<li onmouseout='RightArrow(this);' onmouseover='RightArrow(this);' class='mix' id='rowStore' data-name='" + pageDisplayed[x].name + "' data-rank='2' data-distance='" + pageDisplayed[x].distanceWithMarker1 + "'>" +
+                            "<div style='display: inline;'>" +
+                            "<table style='width:380px;'>" +
+                            "<tr><td></td><td style='font-size:25px;font-family: Roboto;'>" + pageDisplayed[x].name + "</td>" +
+                            "<td rowspan='5' width='40px;font-weight: 600;'><div id='rightArrow' class='controlArrow next' storeId='" + pageDisplayed[x].storeId + "' onclick='viewMoreDetail(this);'></div><td></tr>" +
+                            "<tr><td rowspan='4'><img style='width:90px;margin-right: 10px;' src='" + pageDisplayed[x].cover + "'/></td>" +
+                            "<td style='font-size:15px;font-family: Roboto;display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='height:25px;margin-left:10px;'>" + pageDisplayed[x].distance + "m</div></td></tr>" +
+                            "<tr><td style='font-size:15px;font-family: Roboto;display: flex;'><img style='margin-top: auto;height: 25px;margin-bottom: auto;' src='icon/location.png'/><div style='width:70%;margin-left:10px;'>" + pageDisplayed[x].storeAddress + "</div></td></tr>" +
+                            "<tr><td style='font-size:15px;font-family: Roboto;display: flex;'><img style='height:25px;' src='icon/contact.png'/><div style='height:25px;margin-left:10px;'>" + pageDisplayed[x].storePhoneNumber + "</div></td></tr>" +
+                            "</table>" +
+                            "</div>" +
+                            "</li >"
+                            );
+                }
+                $('#Grid').mixitup();
+                $('#pageBox').appendTo('#mainContent');
+
             }
 
             var infoWindowList = []; //for each time only open a info window
@@ -689,26 +872,34 @@
                     content: message
                 });
                 infoWindowList.push(infoWindow);
-                google.maps.event.addListener(marker, 'mouseover', function() {
+                google.maps.event.addListener(marker, 'click', function() {
                     closeAllInfoWindow();
+
                     infoWindow.open(map, marker);
+
+
                 });
                 /*
                  google.maps.event.addListener(marker, 'mouseout', function() {
-                 infowindow.close();
+                 infoWindow.close();
                  });
                  */
                 return infoWindow;
             }
 
             function addListOfInfoWindow(marker, message) {
+                window.console.log(marker);
                 var infoWindow = new google.maps.InfoWindow({
                     content: message
                 });
                 infoWindowList.push(infoWindow);
-                google.maps.event.addListener(marker, 'mouseover', function() {
+                google.maps.event.addListener(marker, 'click', function() {
                     closeAllInfoWindow();
+
                     infoWindow.open(map, marker);
+
+                    draw(marker);
+
                 });
                 /*
                  google.maps.event.addListener(marker, 'mouseout', function() {
@@ -749,7 +940,7 @@
 
             }
 
-            markerColorList = ["marker/centre.png", "fa220f", "e1ff00", "ff9100"];
+            markerColorList = ["marker/centre.png", "fa220f", "3366cc", "ff9100"];
             function markerList() {
                 //the list of marker
                 map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(document.getElementById('legend'));
@@ -784,6 +975,7 @@
             }
 
             function zoomChanged() {
+                closeAllInfoWindow();
                 if (changeZoomBySlide) {
                     changeZoomBySlide = false;
                     return;
@@ -1051,6 +1243,7 @@
                         $('.loading').remove();
                     }
                 });
+                
                 $.ajax({
                     url: 'HandleTag?action=getTags',
                     type: 'POST',
@@ -1061,11 +1254,11 @@
                         } else {
 
                             var tags = JSON.parse(response);
-                            window.console.log(tags);
+
                             for (var x = 0; x < tags['tags'].length; x++) {
                                 var storeName = (tags['tags'][x]['storeName']).toUpperCase();
-                                var storeId = (tags['tags'][x]['storeId']);
-                                $("#tag-display").append("<div storeId='" + storeId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
+                                var tagId = (tags['tags'][x]['tagId']);
+                                $("#tag-display").append("<div tagId='" + tagId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
                             }
                             $("#dialog-tagList").parent().prepend("<div id='loading' class='loading' style='display: none;'></div>");
                             $('#dialog-tagList').dialog('open');
@@ -1082,7 +1275,40 @@
 
             google.maps.event.addDomListener(window, 'load', initialize);</script>
 
+        <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+        <script type="text/javascript">
+            google.load("visualization", "1", {packages: ["corechart"]});
 
+            function draw(marker) {
+
+                data = google.visualization.arrayToDataTable([
+                    ['Genre', 'Gorgeous', 'Good', 'Regular', {role: 'annotation'}],
+                    ['',
+                        marker['Gorgeous'],
+                        marker['Good'],
+                        marker['Regular'],
+                        '']
+                ]);
+
+                options = {
+                    width: 300,
+                    height: 50,
+                    legend: {position: 'top', maxLines: 5},
+                    bar: {groupWidth: '75%'},
+                    colors: ["fa220f", "3366cc", "ff9100"], 
+                    isStacked: true
+                };
+
+                var newDiv = document.createElement('div');
+
+                var bar = new google.visualization.BarChart(newDiv);
+
+                bar.draw(data, options);
+
+                $('#storeInfoWindowList').parent().prepend(newDiv);
+            }
+
+        </script>
     </head>
 
 
@@ -1122,12 +1348,6 @@
             <div style=" height: 65px;"><img id="zoomout" onclick="zoomOut();" src="icon/zoomout.png" title="Zoom Out"/></div>
         </div>
         <script>
-
-
-
-
-
-
             $("#personalInfo").click(function() {
                 $.ajax({
                     url: 'HandleUser?action=getInfo',
@@ -1236,14 +1456,22 @@
             });</script>
 
         <div id="mainContent">
-
+            <div id="chart_div"></div>
             <div id="storeBox" class="storeBox"></div>
-
+            <div id="sortList" style=" margin: 10px;">
+                <table>
+                    <tr>
+                    <button sortKey="name" sortBy="0" onclick="sortList(this);">Name</button>
+                    <button sortKey="distance" sortBy="0" onclick="sortList(this);">Distance</button>
+                    <button sortKey="rank" sortBy="0" onclick="sortList(this);">Rank</button>
+                    </tr>
+                </table>
+            </div>
 
             <div id="returnToMap" class="button">Return To Map</div>
         </div>
         <script>
-            //select a store in stores list
+//select a store in stores list
             function viewMoreDetail(obj) {
                 $('#mainContent').scrollTop(0);
                 $('#storeBox').animate({height: '100%'});
@@ -1262,7 +1490,7 @@
                 });
             }
 
-            //return to map UI
+//return to map UI
             $('#returnToMap').click(function() {
                 $('#storeBox').animate({height: '30px'});
                 $('#specificStore').animate({right: '-70%'});

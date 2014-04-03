@@ -65,6 +65,7 @@ public class HandleTag extends HttpServlet {
                     store = new JSONObject();
                     store.put("storeName", tags.get(x).getStoreID().getStoreName());
                     store.put("storeId", tags.get(x).getStoreID().getStoreID());
+                    store.put("tagId", tags.get(x).getTagID());
                     array.put(store);
                     //stack overflow easily happens
                 }
@@ -93,8 +94,8 @@ public class HandleTag extends HttpServlet {
                 tag.setTagID(1);
                 tag.setCreationTime(new Date());
                 tag.setUserID(user);
-                
-                
+
+
                 tag.setStoreID(em.find(Store.class, Integer.parseInt(storeId)));
                 em.persist(tag);
 
@@ -118,22 +119,21 @@ public class HandleTag extends HttpServlet {
                 HttpSession httpSession = request.getSession(false);
                 User user = (User) httpSession.getAttribute("user");
 
-                String storeId = request.getParameter("storeId");
-                
+                String tagId = request.getParameter("tagId");
+
                 EntityManagerFactory factory = Persistence.createEntityManagerFactory("ProductSearch_3PU");
                 EntityManager em = factory.createEntityManager();
                 em.getTransaction().begin();
 
 
-                
-                ArrayList<Tag> tags = new ArrayList<Tag>(user.getTagCollection());
-                for (int x = 0; x < tags.size() ; x++) {
-                    if (storeId.equalsIgnoreCase("" + tags.get(x).getStoreID().getStoreID())) {
-                        Tag tag = em.merge(tags.get(x));
-                        em.remove(tag);
-                    }
-                }
-                
+
+
+
+                Tag tag = em.merge(em.find(Tag.class, Integer.parseInt(tagId)));
+                em.remove(tag);
+
+
+
                 User newUser = em.find(User.class, user.getUserID());
                 httpSession.setAttribute("user", newUser);
                 //renew the bean.user in user
