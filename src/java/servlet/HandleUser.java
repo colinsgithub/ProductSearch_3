@@ -76,9 +76,6 @@ public class HandleUser extends HttpServlet {
          String dbUrl = this.getServletContext().getInitParameter("dbUrl");
          */
 
-        String dbUrl = "jdbc:mysql://localhost:3306/productSearch";
-        String dbUser = "root";
-        String dbPassword = "root";
 
 
     }
@@ -171,16 +168,8 @@ public class HandleUser extends HttpServlet {
             rd = getServletContext().getRequestDispatcher("/personalInfo.jsp");
             rd.forward(request, response);
         } else if ("updateUser".equalsIgnoreCase(action)) {
-            
-            System.out.println("*****");
             String colum = request.getParameter("name");
             String value = request.getParameter("value");
-            
-            System.out.println(colum);
-            System.out.println(value);
-            System.out.println("*****");
-            
-            
             
             HttpSession httpSession = request.getSession(false);
             User user = (User) httpSession.getAttribute("user");
@@ -207,9 +196,13 @@ public class HandleUser extends HttpServlet {
             
             httpSession.setAttribute("user", newUser);
 
-        } else {
+        } else if("viewOtherUser".equalsIgnoreCase(action)) {} 
+            
+        
+        
+        else {
             PrintWriter out = response.getWriter();
-            out.println("No such action!!!");
+            out.println("HandleUser:No such action!!!");
         }
     }
 }

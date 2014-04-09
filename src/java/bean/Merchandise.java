@@ -18,7 +18,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -40,6 +39,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Merchandise.findByListingYear", query = "SELECT m FROM Merchandise m WHERE m.listingYear = :listingYear"),
     @NamedQuery(name = "Merchandise.findByReferenceLink", query = "SELECT m FROM Merchandise m WHERE m.referenceLink = :referenceLink")})
 public class Merchandise implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "merchandise")
+    private Collection<StoreMerchandise> storeMerchandiseCollection;
     private static final long serialVersionUID = 1L;
     @EmbeddedId
     protected MerchandisePK merchandisePK;
@@ -58,18 +59,12 @@ public class Merchandise implements Serializable {
     private Date listingYear;
     @Column(name = "referenceLink")
     private String referenceLink;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "merchandise")
-    private Collection<StoreMerchandise> storeMerchandiseCollection;
-    @JoinColumn(name = "brandID", referencedColumnName = "brandID")
-    @ManyToOne(optional = false)
-    private Brand brandID;
     @JoinColumn(name = "categoryID", referencedColumnName = "categoryID", insertable = false, updatable = false)
     @ManyToOne(optional = false)
     private Category category;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "merchandise")
-    private Collection<Mobile> mobileCollection;
-    @OneToOne(cascade = CascadeType.ALL, mappedBy = "merchandise")
-    private Cloth cloth;
+    @JoinColumn(name = "brandID", referencedColumnName = "brandID")
+    @ManyToOne(optional = false)
+    private Brand brandID;
 
     public Merchandise() {
     }
@@ -136,23 +131,6 @@ public class Merchandise implements Serializable {
         this.referenceLink = referenceLink;
     }
 
-    @XmlTransient
-    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
-        return storeMerchandiseCollection;
-    }
-
-    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
-        this.storeMerchandiseCollection = storeMerchandiseCollection;
-    }
-
-    public Brand getBrandID() {
-        return brandID;
-    }
-
-    public void setBrandID(Brand brandID) {
-        this.brandID = brandID;
-    }
-
     public Category getCategory() {
         return category;
     }
@@ -161,21 +139,12 @@ public class Merchandise implements Serializable {
         this.category = category;
     }
 
-    @XmlTransient
-    public Collection<Mobile> getMobileCollection() {
-        return mobileCollection;
+    public Brand getBrandID() {
+        return brandID;
     }
 
-    public void setMobileCollection(Collection<Mobile> mobileCollection) {
-        this.mobileCollection = mobileCollection;
-    }
-
-    public Cloth getCloth() {
-        return cloth;
-    }
-
-    public void setCloth(Cloth cloth) {
-        this.cloth = cloth;
+    public void setBrandID(Brand brandID) {
+        this.brandID = brandID;
     }
 
     @Override
@@ -201,6 +170,15 @@ public class Merchandise implements Serializable {
     @Override
     public String toString() {
         return "bean.Merchandise[ merchandisePK=" + merchandisePK + " ]";
+    }
+
+    @XmlTransient
+    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
+        return storeMerchandiseCollection;
+    }
+
+    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
+        this.storeMerchandiseCollection = storeMerchandiseCollection;
     }
     
 }

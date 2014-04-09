@@ -1,3 +1,9 @@
+<%@page import="java.util.List"%>
+<%@page import="bean.Comment"%>
+<%@page import="javax.persistence.Query"%>
+<%@page import="javax.persistence.EntityManager"%>
+<%@page import="javax.persistence.Persistence"%>
+<%@page import="javax.persistence.EntityManagerFactory"%>
 <!DOCTYPE html>
 <%@page import="bean.Store"%>
 <%@page import="java.util.ArrayList"%>
@@ -219,6 +225,11 @@
 
         <link href='http://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
 
+
+
+        <%--css for nested--%>
+        <link href="css/nested.css" rel="stylesheet" type="text/css" media="screen" />
+
         <%--source from JQuery UI--%>
 
         <link rel="stylesheet" href="css/loadingBar.css">
@@ -229,7 +240,14 @@
         <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
 
+
+        <%--javascript for mixitup--%>
         <script src="js/jquery.mixitup.min.js"></script>
+
+        <%--javascript for nested--%>
+        <script src="js/jquery.nested.js"></script>
+        <script src="js/makeboxes.js"></script>
+
 
         <script>
             //init slider bar
@@ -348,6 +366,27 @@
                         out.println("storePhoneNumber = '" + stores.get(x).getPhoneNumber() + "'");
                         out.println("storeAddress = '" + stores.get(x).getAddress() + "'");
                         out.println("storeAvatar = '" + stores.get(x).getStoreAvatar() + "'");
+
+                        EntityManagerFactory factory = Persistence.createEntityManagerFactory("ProductSearch_3PU");
+                        EntityManager em = factory.createEntityManager();
+                        em.getTransaction().begin();
+
+                        //Store store = em.find(Store.class, storeId);
+                        
+                        Query query = em.createQuery("select c.rank, count(c.rank) from Comment c where c.commentPK.storeID = :storeID group by c.rank");
+                        query.setParameter("storeID", Integer.parseInt(storeId));
+                        //get a sorted comment list
+                        List countList = query.getResultList();
+                        
+                        
+                        
+                        em.getTransaction().commit();
+                        em.close();
+                        factory.close();
+
+                        
+
+                        
                         //out.println("verfiyRange(radius, latLngWithInRangeArray, latLngB, storeName, storeId);");
                         out.println("dropMarker(latLngB);");
 
@@ -549,8 +588,117 @@
             }
 
             function comment(obj) {
-                alert("GET COMMENT REQUEST! Store ID : " + $(obj).attr('storeId'));
+                var storeId = $(obj).attr('storeId');
+
+                $("#dialog-commentList").dialog({
+                    autoOpen: false,
+                    height: 600,
+                    width: 1000,
+                    draggable: false,
+                    modal: true,
+                    resizable: false,
+                    minHeight: 200,
+                    minWidth: 455,
+                    maxWidth: 1100,
+                    maxHeight: 570,
+                    buttons: {
+                        "Comment": function() {
+                            var box = document.createElement('div');
+                            box.className = 'box size42';
+
+                            $(box).append('<div style="margin:10px;float: right;">' +
+                                    '<textarea id="comment" style="resize:none;" rows="6" cols="40" placeholder="Your Comment..."></textarea><br>' +
+                                    '<input type="radio" name="commentType" value="positive">Positive<br>' +
+                                    '<input type="radio" name="commentType" value="negative">Negative' +
+                                    '<button style="float: right;" storeId="' + storeId + '" onclick="submitComment(this);">Comment</button></div>');
+
+                            $("#comment-display").prepend(box).nested("prepend", box);
+                        },
+                        "Close": function() {
+                            $(this).dialog("close");
+                        }
+                    },
+                    close: function() {
+
+                    }
+                });
+
+                $("#dialog-commentList").dialog("open");
+                /*
+                 $("#dialog-commentList").parent().position({
+                 of: $(".gm-style-iw").parent(),
+                 my: "centre" + " " + "top",
+                 at: "centre" + " " + "top",
+                 collision: "fit" + " " + "fit"
+                 });
+                 */
+                $("#loading").remove();
+                $("#dialog-commentList").parent().prepend("<div id='loading' class='loading' style='display: none;'></div>");
+
+                //get comment from servlet
+
+                $("#comment-display").empty();
+                //clear older data
+
+                getCommentFirstTime = function() {
+                    $.ajax({
+                        url: 'HandleComment?action=getComment&storeId=' + storeId,
+                        type: 'POST',
+                        data: {
+                            startIndex: 0,
+                            endIndex: 9
+                        },
+                        // pass comment for load part of comment list 
+                        success: function(response) {
+                            var json = JSON.parse(response);
+
+                            for (var x in json['comments']) {
+                                var userId = json['comments'][x]['userId'];
+                                var userName = json['comments'][x]['userName'];
+                                var feedback = json['comments'][x]['feedback'];
+                                var postedDate = json['comments'][x]['postedDate'];
+
+                                /*
+                                 $("#comment-display").append("<a href=HandleUser?action=viewOtherUser&userId=" + userId + ">" + userName + "</a>");
+                                 $("#comment-display").append("<div style=''>" + feedback + "</div>");
+                                 */
+                                $("#comment-display").append(
+                                        '<div class="' + randomSize(feedback.length) + '">' +
+                                        '<div style="display: flex;"><img style="margin: 5px;height:50px; id="personalInfo" src="icon/profle.png" title="User Photo"/>' +
+                                        '<div><a href=HandleUser?action=viewOtherUser&userId=' + userId + '>' + userName + '</a>' +
+                                        '<br/>' + postedDate + '</div></div><cpan>' + feedback + '</cpan></div>');
+                            }
+
+                            $("#comment-display").nested({
+                                resizeToFit: false,
+                                minWidth: 100,
+                                gutter: 5
+                            });
+
+                            $("#dialog-commentList").scroll(loadMore);
+
+                            var isLastIndex = json['isLastIndex'];
+                            var startIndex = json['startIndex'];
+                            var endIndex = json['endIndex'];
+                            function loadMore() {
+                                if ($("#dialog-commentList").scrollTop() + $("#dialog-commentList").height() > $("#comment-display").height() - 1) {
+                                    if (!isLastIndex) {
+                                        var commentListRequest = makeBoxes(startIndex, endIndex, json['storeId']);
+                                        isLastIndex = commentListRequest[0]['isLastIndex'];
+                                        startIndex = commentListRequest[0]['startIndex'];
+                                        endIndex = commentListRequest[0]['endIndex'];
+
+                                    }
+                                }
+                            }
+                        }
+                    });
+                };
+
+                getCommentFirstTime();
             }
+
+
 
             function addToFollowList(obj) {
                 $.ajax({
@@ -653,14 +801,14 @@
                                 url: 'HandleTag?action=getTags',
                                 type: 'POST',
                                 success: function(response) {
-                                        $("#tag-display").empty();
-                                        var tags = JSON.parse(response);
-                                        for (var x = 0; x < tags['tags'].length; x++) {
-                                            var storeName = (tags['tags'][x]['storeName']).toUpperCase();
-                                            var tagId = (tags['tags'][x]['tagId']);
-                                            $("#tag-display").append("<div tagId='" + tagId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
-                                        }
-                                        $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
+                                    $("#tag-display").empty();
+                                    var tags = JSON.parse(response);
+                                    for (var x = 0; x < tags['tags'].length; x++) {
+                                        var storeName = (tags['tags'][x]['storeName']).toUpperCase();
+                                        var tagId = (tags['tags'][x]['tagId']);
+                                        $("#tag-display").append("<div tagId='" + tagId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
+                                    }
+                                    $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
                                 }
                             });
                         }
@@ -872,7 +1020,7 @@
                     content: message
                 });
                 infoWindowList.push(infoWindow);
-                google.maps.event.addListener(marker, 'click', function() {
+                google.maps.event.addListener(marker, 'mouseover', function() {
                     closeAllInfoWindow();
 
                     infoWindow.open(map, marker);
@@ -1233,7 +1381,7 @@
             function openFavList() {
                 $('#dialog-tagList').dialog({
                     autoOpen: false,
-                    height: 450,
+                    height: 350,
                     width: 350,
                     draggable: false,
                     modal: true,
@@ -1243,7 +1391,7 @@
                         $('.loading').remove();
                     }
                 });
-                
+
                 $.ajax({
                     url: 'HandleTag?action=getTags',
                     type: 'POST',
@@ -1295,7 +1443,7 @@
                     height: 50,
                     legend: {position: 'top', maxLines: 5},
                     bar: {groupWidth: '75%'},
-                    colors: ["fa220f", "3366cc", "ff9100"], 
+                    colors: ["fa220f", "3366cc", "ff9100"],
                     isStacked: true
                 };
 
@@ -1441,7 +1589,7 @@
                                 collision: "fit" + " " + "fit"
                             });
                             var json = JSON.parse(login);
-                            window.console.log(json);
+
                             $("#personalInfo-display").append('<div>User ID:' + json['user']['userID'] + '</div>');
                             $("#personalInfo-display").append('<div>User Name:' + (json['user']['userName']).toString().toUpperCase() + '</div>');
                             $("#personalInfo-display").append('<div>Credit:' + json['user']['credit'] + '</div>');
@@ -1518,6 +1666,14 @@
         <div id="dialog-tagList">
             <div class="login-title">Your Favorite</div>
             <div id="tag-display" class="tag-display"></div>
+        </div>
+
+        <div id="dialog-commentList">
+            <div class="login-title">Store Comment</div>
+
+            <div id="comment-display" class="comment-display">
+
+            </div>
         </div>
 
         <script>

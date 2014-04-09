@@ -5,9 +5,7 @@
 package bean;
 
 import java.io.Serializable;
-import java.util.Collection;
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
@@ -17,10 +15,8 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
 
 /**
  *
@@ -64,8 +60,6 @@ public class StoreMerchandise implements Serializable {
         @JoinColumn(name = "categoryID", referencedColumnName = "categoryID", insertable = false, updatable = false)})
     @ManyToOne(optional = false)
     private Merchandise merchandise;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "storeMerchandise")
-    private Collection<StoreUpperGarmentChoice> storeUpperGarmentChoiceCollection;
 
     public StoreMerchandise() {
     }
@@ -145,15 +139,6 @@ public class StoreMerchandise implements Serializable {
 
     public void setMerchandise(Merchandise merchandise) {
         this.merchandise = merchandise;
-    }
-
-    @XmlTransient
-    public Collection<StoreUpperGarmentChoice> getStoreUpperGarmentChoiceCollection() {
-        return storeUpperGarmentChoiceCollection;
-    }
-
-    public void setStoreUpperGarmentChoiceCollection(Collection<StoreUpperGarmentChoice> storeUpperGarmentChoiceCollection) {
-        this.storeUpperGarmentChoiceCollection = storeUpperGarmentChoiceCollection;
     }
 
     @Override

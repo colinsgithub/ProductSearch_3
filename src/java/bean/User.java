@@ -75,18 +75,8 @@ public class User implements Serializable {
     private Collection<Store> storeCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "userID")
     private Collection<Tag> tagCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "owner")
-    private Collection<ChatRoom> chatRoomCollection;
-    @OneToMany(mappedBy = "administrator")
-    private Collection<ChatRoom> chatRoomCollection1;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Collection<Message> messageCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
     private Collection<Comment> commentCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Collection<UserStatus> userStatusCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "user")
-    private Collection<PromotionPreference> promotionPreferenceCollection;
 
     public User() {
     }
@@ -212,57 +202,12 @@ public class User implements Serializable {
     }
 
     @XmlTransient
-    public Collection<ChatRoom> getChatRoomCollection() {
-        return chatRoomCollection;
-    }
-
-    public void setChatRoomCollection(Collection<ChatRoom> chatRoomCollection) {
-        this.chatRoomCollection = chatRoomCollection;
-    }
-
-    @XmlTransient
-    public Collection<ChatRoom> getChatRoomCollection1() {
-        return chatRoomCollection1;
-    }
-
-    public void setChatRoomCollection1(Collection<ChatRoom> chatRoomCollection1) {
-        this.chatRoomCollection1 = chatRoomCollection1;
-    }
-
-    @XmlTransient
-    public Collection<Message> getMessageCollection() {
-        return messageCollection;
-    }
-
-    public void setMessageCollection(Collection<Message> messageCollection) {
-        this.messageCollection = messageCollection;
-    }
-
-    @XmlTransient
     public Collection<Comment> getCommentCollection() {
         return commentCollection;
     }
 
     public void setCommentCollection(Collection<Comment> commentCollection) {
         this.commentCollection = commentCollection;
-    }
-
-    @XmlTransient
-    public Collection<UserStatus> getUserStatusCollection() {
-        return userStatusCollection;
-    }
-
-    public void setUserStatusCollection(Collection<UserStatus> userStatusCollection) {
-        this.userStatusCollection = userStatusCollection;
-    }
-
-    @XmlTransient
-    public Collection<PromotionPreference> getPromotionPreferenceCollection() {
-        return promotionPreferenceCollection;
-    }
-
-    public void setPromotionPreferenceCollection(Collection<PromotionPreference> promotionPreferenceCollection) {
-        this.promotionPreferenceCollection = promotionPreferenceCollection;
     }
 
     @Override

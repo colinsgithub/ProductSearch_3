@@ -33,6 +33,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Brand.findByBrandID", query = "SELECT b FROM Brand b WHERE b.brandID = :brandID"),
     @NamedQuery(name = "Brand.findByBrandRegion", query = "SELECT b FROM Brand b WHERE b.brandRegion = :brandRegion")})
 public class Brand implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "brandID")
+    private Collection<Merchandise> merchandiseCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -49,8 +51,6 @@ public class Brand implements Serializable {
     @Basic(optional = false)
     @Column(name = "brandRegion")
     private String brandRegion;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "brandID")
-    private Collection<Merchandise> merchandiseCollection;
 
     public Brand() {
     }
@@ -97,15 +97,6 @@ public class Brand implements Serializable {
         this.brandRegion = brandRegion;
     }
 
-    @XmlTransient
-    public Collection<Merchandise> getMerchandiseCollection() {
-        return merchandiseCollection;
-    }
-
-    public void setMerchandiseCollection(Collection<Merchandise> merchandiseCollection) {
-        this.merchandiseCollection = merchandiseCollection;
-    }
-
     @Override
     public int hashCode() {
         int hash = 0;
@@ -129,6 +120,15 @@ public class Brand implements Serializable {
     @Override
     public String toString() {
         return "bean.Brand[ brandID=" + brandID + " ]";
+    }
+
+    @XmlTransient
+    public Collection<Merchandise> getMerchandiseCollection() {
+        return merchandiseCollection;
+    }
+
+    public void setMerchandiseCollection(Collection<Merchandise> merchandiseCollection) {
+        this.merchandiseCollection = merchandiseCollection;
     }
     
 }

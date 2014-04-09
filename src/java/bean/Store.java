@@ -43,6 +43,8 @@ import javax.xml.bind.annotation.XmlTransient;
     @NamedQuery(name = "Store.findByAltitude", query = "SELECT s FROM Store s WHERE s.altitude = :altitude"),
     @NamedQuery(name = "Store.findByStoreCreateTime", query = "SELECT s FROM Store s WHERE s.storeCreateTime = :storeCreateTime")})
 public class Store implements Serializable {
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
+    private Collection<StoreMerchandise> storeMerchandiseCollection;
     private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -84,12 +86,8 @@ public class Store implements Serializable {
     @JoinColumn(name = "categoryID", referencedColumnName = "categoryID")
     @ManyToOne(optional = false)
     private Category categoryID;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private Collection<StoreMerchandise> storeMerchandiseCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "storeID")
     private Collection<Tag> tagCollection;
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
-    private Collection<PromotionScheme> promotionSchemeCollection;
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "store")
     private Collection<Comment> commentCollection;
 
@@ -212,30 +210,12 @@ public class Store implements Serializable {
     }
 
     @XmlTransient
-    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
-        return storeMerchandiseCollection;
-    }
-
-    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
-        this.storeMerchandiseCollection = storeMerchandiseCollection;
-    }
-
-    @XmlTransient
     public Collection<Tag> getTagCollection() {
         return tagCollection;
     }
 
     public void setTagCollection(Collection<Tag> tagCollection) {
         this.tagCollection = tagCollection;
-    }
-
-    @XmlTransient
-    public Collection<PromotionScheme> getPromotionSchemeCollection() {
-        return promotionSchemeCollection;
-    }
-
-    public void setPromotionSchemeCollection(Collection<PromotionScheme> promotionSchemeCollection) {
-        this.promotionSchemeCollection = promotionSchemeCollection;
     }
 
     @XmlTransient
@@ -270,6 +250,15 @@ public class Store implements Serializable {
     @Override
     public String toString() {
         return "bean.Store[ storeID=" + storeID + " ]";
+    }
+
+    @XmlTransient
+    public Collection<StoreMerchandise> getStoreMerchandiseCollection() {
+        return storeMerchandiseCollection;
+    }
+
+    public void setStoreMerchandiseCollection(Collection<StoreMerchandise> storeMerchandiseCollection) {
+        this.storeMerchandiseCollection = storeMerchandiseCollection;
     }
     
 }

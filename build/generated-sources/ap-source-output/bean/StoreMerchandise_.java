@@ -3,13 +3,11 @@ package bean;
 import bean.Merchandise;
 import bean.Store;
 import bean.StoreMerchandisePK;
-import bean.StoreUpperGarmentChoice;
 import javax.annotation.Generated;
-import javax.persistence.metamodel.CollectionAttribute;
 import javax.persistence.metamodel.SingularAttribute;
 import javax.persistence.metamodel.StaticMetamodel;
 
-@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-04-02T21:05:33")
+@Generated(value="EclipseLink-2.5.0.v20130507-rNA", date="2014-04-09T13:20:43")
 @StaticMetamodel(StoreMerchandise.class)
 public class StoreMerchandise_ { 
 
@@ -21,6 +19,5 @@ public class StoreMerchandise_ {
     public static volatile SingularAttribute<StoreMerchandise, String> merchandiseImage1;
     public static volatile SingularAttribute<StoreMerchandise, String> merchandiseImage2;
     public static volatile SingularAttribute<StoreMerchandise, String> merchandiseImage3;
-    public static volatile CollectionAttribute<StoreMerchandise, StoreUpperGarmentChoice> storeUpperGarmentChoiceCollection;
 
 }

@@ -94,6 +94,11 @@
     line-height: 30px;
 }
 
+#dialog-commentList {
+    height:30px;
+    line-height: 30px;
+}
+
 #tag-display div {
     margin:10px 0px;
 }
@@ -108,3 +113,94 @@
     float:right;
 }
 
+.comment-display {
+    font-size: 15px;
+    font-family: Roboto,Arial,sans-serif;
+    margin: 50px 50px 200px 50px;
+}
+
+.comment-display cpan {
+    font-size: 12px;
+    font-family: Consolas, Inconsolata, "Lucida Console", "Courier New", monospace;
+}
+
+.comment-display button {	
+
+    border-radius: 3px;
+    border: 1px solid #336895;
+    box-shadow: inset 0 1px 0 #8dc2f0;
+    width: 100px;
+    height: 30px;
+
+    background: #5BA7E9;
+
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 -1px 0 #336895;
+
+    font-size: 13px;
+}
+
+.comment-display button:hover {
+    background: #6bafea;
+}
+
+.comment-display button:active {
+    background: #4889C2;
+
+}
+
+#sortList button {
+    margin: 5px;
+    border-radius: 3px;
+    border: 1px solid #336895;
+    box-shadow: inset 0 1px 0 #8dc2f0;
+    width: 100px;
+    height: 30px;
+
+    background: #5BA7E9;
+
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 -1px 0 #336895;
+
+    font-size: 13px;
+}
+
+#sortList button:hover {
+    background: #6bafea;
+}
+
+#sortList button:active {
+    background: #4889C2;
+
+}
+
+#pageBox button {
+    margin: 5px;
+    border-radius: 3px;
+    border: 1px solid #336895;
+    box-shadow: inset 0 1px 0 #8dc2f0;
+    width: 30px;
+    height: 30px;
+
+    background: #5BA7E9;
+
+    cursor: pointer;
+    color: white;
+    font-weight: bold;
+    text-shadow: 0 -1px 0 #336895;
+
+    font-size: 13px;
+}
+
+#pageBox button:hover {
+    background: #6bafea;
+}
+
+#pageBox button:active {
+    background: #4889C2;
+
+}

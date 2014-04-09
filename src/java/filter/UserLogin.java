@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import org.eclipse.persistence.sessions.Session;
+import servlet.HandleComment;
 
 /**
  *
@@ -114,22 +115,25 @@ public class UserLogin implements Filter {
         HttpServletRequest httpRequest = (HttpServletRequest) request;
         HttpServletResponse httpResponse = (HttpServletResponse) response;
 
-
-
         HttpSession session = httpRequest.getSession(false);
+        //get user object from session 
+
+        String action = httpRequest.getParameter("action");
         
         
-        if ("login".equalsIgnoreCase(httpRequest.getParameter("action"))) {
-            
+        //can direct run with check login
+        if ("login".equalsIgnoreCase(action) || "getComment".equalsIgnoreCase(action)) {
         } else if (session == null || session.getAttribute("user") == null) {
             //httpResponse.sendRedirect(httpRequest.getContextPath() + "/login.jsp");
             httpResponse.getWriter().print("false");
             return;
         } else if (session.getAttribute("user") != null) {
             
+            if ("commentStore".equalsIgnoreCase(action)) {
+            
+            }
+
         }
-
-
 
         Throwable problem = null;
         try {
