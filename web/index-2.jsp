@@ -12,208 +12,6 @@
         <title>Product Search</title>
         <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
         <meta charset="utf-8">
-        <style>
-            html, body, #map-canvas {
-                height: 100%;
-                margin: 0px;
-                padding: 0px
-            }
-
-            body {
-                min-width: 1200px;
-                min-height: 600px;
-
-            }
-
-            .labels {
-                color: black;
-                font-family: "Lucida Grande", "Arial", sans-serif;
-                font-size: 10px;
-                font-weight: bold;
-                text-align: center;
-                width: 40px;
-                white-space: nowrap;
-            }
-
-
-            #returnToMap {
-                padding: 5px;
-                text-align:center;
-                width: 110px;
-                color: white;
-                font-size: 15px;
-                font-family: 'Passion One', cursive;
-                -webkit-transition: 0.4s;
-                transition: 0.4s;
-                cursor: pointer;
-                visibility:hidden; 
-                position: absolute;
-                right: 5px;
-                bottom: 5%;
-                background-color: rgb(0, 0, 0);
-            }
-
-            .buttonHover {
-                text-align: center;
-                cursor: pointer;
-                background-color: rgb(81,81,81);
-                box-shadow: 0px -10px 30px -15px black inset;
-            }
-
-            .controls {
-                margin-top: 16px;
-                border: 1px solid transparent;
-                border-radius: 2px 0 0 2px;
-                box-sizing: border-box;
-                -moz-box-sizing: border-box;
-                height: 32px;
-                outline: none;
-                box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
-            }
-
-            #pac-input {
-
-                background-color: #fff;
-                padding: 0 11px 0 13px;
-                width: 400px;
-                font-family: Roboto;
-                font-size: 15px;
-                font-weight: 300;
-                text-overflow: ellipsis;
-            }
-
-            #pac-input:focus {
-                border-color: #4d90fe;
-                margin-left: -1px;
-                padding-left: 14px;  /* Regular padding-left + 1. */
-                width: 401px;
-            }
-
-            .pac-container {
-                font-family: Roboto;
-            }
-
-            #type-selector {
-                color: #fff;
-                background-color: #4d90fe;
-                padding: 5px 11px 0px 11px;
-            }
-
-            #type-selector label {
-                font-family: Roboto;
-                font-size: 13px;
-                font-weight: 300;
-            }
-
-            #mainContent {
-                border-left: 1px solid #f7f7f7;
-                box-shadow: 0 2px 60px rgba(0, 0, 0, 0.3);
-                position: absolute; 
-                width: 40%; 
-                height: 100%;
-                top: 0px; 
-                right: -50%; 
-                background:#cbcbcb url(image/bg.png);
-                z-index: 3;
-                overflow-y:auto;
-                padding-bottom:15px;
-            }
-
-            .storeBox {
-                height: 50px;
-                width: 100%;
-                background: -webkit-linear-gradient(top, rgba(200,200,200,1) 0%,rgba(191,191,191,1) 100%);
-            }
-
-            .ui-dialog {
-                -webkit-box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-                box-shadow: 0 6px 12px rgba(0, 0, 0, 0.175);
-            }
-
-            .ui-dialog-titlebar {
-                background: none;
-                border: none;
-            }
-            .ui-dialog .ui-state-error { 
-                padding: .3em; 
-            }
-
-            .validateTips { 
-                border: 1px solid transparent; 
-                padding: 0.3em; }
-
-            #returnToMap:hover {
-                background-color:rgb(81, 81, 81);
-            }
-
-            .loading {
-                position: absolute;
-                background: #29d;
-                z-index: 2000;
-                top: 0;
-                left: 0;
-                height: 2px;
-                width: 100%;
-                -webkit-transition: width 1s;
-                -moz-transition: width 1s;
-                -o-transition: width 1s;
-                transition: width 1s;
-            }
-
-            .pace-inactive {
-                display: none;
-            }
-
-
-            @-webkit-keyframes pace-spinner {
-                0% { -webkit-transform: rotate(0deg); transform: rotate(0deg); }
-            100% { -webkit-transform: rotate(360deg); transform: rotate(360deg); }
-            }
-            @-moz-keyframes pace-spinner {
-                0% { -moz-transform: rotate(0deg); transform: rotate(0deg); }
-            100% { -moz-transform: rotate(360deg); transform: rotate(360deg); }
-            }
-            @-o-keyframes pace-spinner {
-                0% { -o-transform: rotate(0deg); transform: rotate(0deg); }
-            100% { -o-transform: rotate(360deg); transform: rotate(360deg); }
-            }
-            @-ms-keyframes pace-spinner {
-                0% { -ms-transform: rotate(0deg); transform: rotate(0deg); }
-            100% { -ms-transform: rotate(360deg); transform: rotate(360deg); }
-            }
-            @keyframes pace-spinner {
-                0% { transform: rotate(0deg); transform: rotate(0deg); }
-            100% { transform: rotate(360deg); transform: rotate(360deg); }
-            }
-
-
-            .menu img {
-                cursor: pointer;
-                height: 45px;
-                border-radius: 60px;
-                -moz-border-radius: 60px;
-                -webkit-border-radius: 50px;
-                -webkit-box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.300);
-                box-shadow: 4px 3px 5px rgba(0, 0, 0, 0.300);
-            }
-
-
-            .controlArrow.next {
-                display: none;
-                right: 15px;
-                border-width: 38.5px 0 38.5px 34px;
-                border-color: transparent transparent transparent #fff;
-            }
-
-            .controlArrow {
-                cursor: pointer;
-                width: 0;
-                height: 0;
-                border-style: solid;
-            }
-
-        </style>
-
 
         <script type="text/javascript" src="http://maps.googleapis.com/maps/api/js?v=3.exp&key=AIzaSyBQTZl_t-QrF8ExPfToPAjeclIf1DUZ2jc&key=AIzaSyBQTZl_t-QrF8ExPfToPAjeclIf1DUZ2jc&libraries=geometry,places&sensor=false"></script>
 
@@ -225,10 +23,10 @@
 
         <link href='http://fonts.googleapis.com/css?family=Passion+One' rel='stylesheet' type='text/css'>
 
-
-
         <%--css for nested--%>
         <link href="css/nested.css" rel="stylesheet" type="text/css" media="screen" />
+        <%--css for normal--%>
+        <link href="css/normal.css" rel="stylesheet" type="text/css" media="screen" />
 
         <%--source from JQuery UI--%>
 
@@ -247,7 +45,8 @@
         <%--javascript for nested--%>
         <script src="js/jquery.nested.js"></script>
         <script src="js/makeboxes.js"></script>
-
+        <%--javascript for three.js--%>
+        <script src="http://www.html5canvastutorials.com/libraries/three.min.js"></script>
 
         <script>
             //init slider bar
@@ -292,7 +91,8 @@
                                 height: '45px'
                             }, 100);
                         });
-            });</script>
+            });
+        </script>
 
 
         <script>
@@ -338,8 +138,6 @@
 
             function lopStore() {
                 deleteOverlays(); //remove previous markers
-
-
             <%
                 String lat = "";
                 String lng = "";
@@ -372,21 +170,15 @@
                         em.getTransaction().begin();
 
                         //Store store = em.find(Store.class, storeId);
-                        
+
                         Query query = em.createQuery("select c.rank, count(c.rank) from Comment c where c.commentPK.storeID = :storeID group by c.rank");
                         query.setParameter("storeID", Integer.parseInt(storeId));
                         //get a sorted comment list
                         List countList = query.getResultList();
-                        
-                        
-                        
                         em.getTransaction().commit();
                         em.close();
                         factory.close();
 
-                        
-
-                        
                         //out.println("verfiyRange(radius, latLngWithInRangeArray, latLngB, storeName, storeId);");
                         out.println("dropMarker(latLngB);");
 
@@ -396,28 +188,14 @@
                 }
             %>
             }
-
-
-
             function dropMarker(latLngB) {
-
                 if (markerFilterList[idenClassOfStore(storeRank)] === null) {
                     return;
                 }
-                //filter marker
-
-                var pinColor = colorOfMarker(storeRank);
-                var pinImage = new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|" + pinColor,
-                        new google.maps.Size(21, 34),
-                        new google.maps.Point(0, 0),
-                        new google.maps.Point(10, 34));
-
 
                 distanceWithMarker1 = google.maps.geometry.spherical.computeDistanceBetween(marker1.getPosition(), latLngB);
-
                 var distance = google.maps.geometry.spherical.computeDistanceBetween(map.getCenter(), latLngB);
                 if (distance < cityCircle.getRadius()) {
-
                     var marker = new MarkerWithLabel({
                         map: map,
                         position: latLngB,
@@ -427,7 +205,7 @@
                         cover: storeAvatar,
                         storeID: storeId,
                         rank: storeRank,
-                        icon: pinImage,
+                        icon: colorOfMarker(storeRank),
                         storeAddress: storeAddress,
                         storePhoneNumber: storePhoneNumber,<%--shape: {
                             coords: [0, 0, 20],
@@ -435,7 +213,7 @@
                         },
             --%>
                         labelContent: "1",
-                        labelAnchor: new google.maps.Point(20, 30),
+                        labelAnchor: new google.maps.Point(20, 50),
                         labelClass: "labels", // the CSS class for the label
                         labelStyle: {opacity: 1}
                     });
@@ -451,13 +229,7 @@
                             var distanceBetStores = google.maps.geometry.spherical.computeDistanceBetween(markersArray[i].getPosition(), marker.getPosition());
                             if (distanceBetStores < (cityCircle.getRadius() * 0.15)) {
                                 markersArray[i].labelContent = parseInt(markersArray[i].labelContent) + 1;
-                                markersArray[i].setIcon(new google.maps.MarkerImage("http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|" + "ffffff",
-                                        new google.maps.Size(21, 34),
-                                        new google.maps.Point(0, 0),
-                                        new google.maps.Point(10, 34)));
-                                //Change the overlayed marker to another color
-
-                                markersArray[i][0].push(marker);
+                                markersArray[i][0].push(marker);//push overlaying marker to one
                                 marker.setMap(null);
                                 markerRecord = false;
                                 break;
@@ -469,13 +241,203 @@
                         //marker[0].push(marker); //a list should incude the main marker;
                         markersArray.push(marker);
                     }
-
                     //all stores with radius
                     //createListOfStores(parseInt(distance));
                 }
+            }
+
+            var gorgeousCylinderIcon = createSimpleCylinder(16523523).toDataURL();
+            var goodCylinderIcon = createSimpleCylinder(72083).toDataURL();
+            var regularCylinderIcon = createSimpleCylinder(14608396).toDataURL();
+            function createSimpleCylinder(color) {
+                // renderer
+                var renderer = new THREE.WebGLRenderer();
+                renderer.setSize(80, 70);
+                var render = renderer.domElement;
+
+                // camera
+                var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.position.z = 140;
+
+                // scene
+                var scene = new THREE.Scene();
+
+                var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(200, 200, 200);
+                scene.add(directionalLight);
+
+                group = new THREE.Object3D();
+                group.position.y = 5;
+                scene.add(group);
+                group.rotation.x = 3.50;
+
+                var topRadius = 23;
+                var bottomRadius = 23;
+                // cone
+                // API: THREE.CylinderGeometry(bottomRadius, topRadius, height, segmentsRadius, segmentsHeight)
+                var cone = new THREE.Mesh(new THREE.CylinderGeometry(1, topRadius, 30, 15, 1, false), new THREE.MeshPhongMaterial({
+                    color: 7788287,
+                    ambient: 72083,
+                    emissive: color,
+                    specular: 72083,
+                    shininess: 30,
+                    blending: 2,
+                    opacity: 1,
+                    transparent: true,
+                    wireframe: false
+                }));
+                cone.overdraw = true;
+                cone.rotation.x = 0;
+                cone.position.set(0, 50, 0);
+                group.add(cone);
+
+                // cylinder
+                // API: THREE.CylinderGeometry(bottomRadius, topRadius, height, segmentsRadius, segmntsHeight)
+
+                var chartHeight = -30;
+                var position = chartHeight *= -1;
+                var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(bottomRadius, topRadius, 60, 15, 1, false), new THREE.MeshPhongMaterial({
+                    color: 7788287,
+                    ambient: 72083,
+                    emissive: color,
+                    specular: 72083,
+                    shininess: 30,
+                    blending: 2,
+                    opacity: 1,
+                    transparent: false,
+                    wireframe: false
+
+                }));
+                cylinder.overdraw = true;
+                cylinder.rotation.x = 0;
+                cylinder.position.set(0, position -= 25, 0);
+                group.add(cylinder);
 
 
+                renderer.render(scene, camera);
 
+                return render;
+            }
+
+            function createCylinder(layer, oneLayer, twoLayer, threeLayer) {
+                var total = oneLayer + twoLayer + threeLayer;
+                var oneLayerHeight = (oneLayer/total) * 60;
+                var twoLayerHeight = (twoLayer/total) * 60;
+                var threeLayerHeight = (threeLayer/total) * 60;
+                
+                window.console.log(oneLayerHeight);
+                window.console.log(twoLayerHeight);
+                window.console.log(threeLayerHeight);
+                
+                var oneLayerPosition = 50 - 15 - (oneLayerHeight/2);
+                var twoLayerPosistion = oneLayerPosition - (oneLayerHeight/2) - (twoLayerHeight/2);
+                var threeLayerPosition = twoLayerPosistion - (twoLayerHeight/2) - (threeLayerHeight/2)
+                
+                window.console.log(oneLayerPosition);
+                window.console.log(twoLayerPosistion);
+                window.console.log(threeLayerPosition);
+                
+                // renderer
+                var renderer = new THREE.WebGLRenderer();
+                renderer.setSize(80, 70);
+                var render = renderer.domElement;
+
+                // camera
+                var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.position.z = 140;
+
+                // scene
+                var scene = new THREE.Scene();
+
+                var directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+                directionalLight.position.set(200, 200, 200);
+                scene.add(directionalLight);
+
+                group = new THREE.Object3D();
+                group.position.y = 5;
+                scene.add(group);
+                group.rotation.x = 3.50;
+
+                var topRadius = 23;
+                var bottomRadius = 23;
+
+                // cone
+                // API: THREE.CylinderGeometry(bottomRadius, topRadius, height, segmentsRadius, segmentsHeight)
+                var cone = new THREE.Mesh(new THREE.CylinderGeometry(1, topRadius, 30, 15, 1, false), new THREE.MeshPhongMaterial({
+                    color: 7788287,
+                    ambient: 72083,
+                    emissive: 7788287,
+                    specular: 72083,
+                    shininess: 30,
+                    blending: 2,
+                    opacity: 1,
+                    transparent: true,
+                    wireframe: false
+                }));
+
+                cone.rotation.x = 0;
+                cone.position.set(0, 50, 0);
+                group.add(cone);
+
+                // cylinder
+                // API: THREE.CylinderGeometry(bottomRadius, topRadius, height, segmentsRadius, segmntsHeight)
+                var chartHeight = -30;
+                var position = chartHeight *= -1;
+
+                var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(bottomRadius, topRadius, oneLayerHeight, 15, 1, false), new THREE.MeshPhongMaterial({
+                    color: 7788287,
+                    ambient: 72083,
+                    emissive: 14608396,
+                    specular: 72083,
+                    shininess: 30,
+                    blending: 2,
+                    opacity: 1,
+                    transparent: false,
+                    wireframe: false
+                }));
+
+
+                cylinder.rotation.x = 0;
+                cylinder.position.set(0, oneLayerPosition, 0);
+                group.add(cylinder);
+
+                var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(bottomRadius, topRadius, twoLayerPosistion, 15, 1, false), new THREE.MeshPhongMaterial({
+                    color: 7788287,
+                    ambient: 72083,
+                    emissive: 72083,
+                    specular: 72083,
+                    shininess: 30,
+                    blending: 2,
+                    opacity: 1,
+                    transparent: false,
+                    wireframe: false
+                }));
+
+
+                cylinder.rotation.x = 0;
+                cylinder.position.set(0, twoLayerPosistion, 0);
+                group.add(cylinder);
+
+                var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(bottomRadius, topRadius, threeLayerHeight, 15, 1, false), new THREE.MeshPhongMaterial({
+                    color: 7788287,
+                    ambient: 72083,
+                    emissive: 16523523,
+                    specular: 72083,
+                    shininess: 30,
+                    blending: 2,
+                    opacity: 1,
+                    transparent: false,
+                    wireframe: false
+
+                }));
+
+                cylinder.rotation.x = 0;
+                cylinder.position.set(0, threeLayerPosition, 0);
+                group.add(cylinder);
+
+                // render
+                renderer.render(scene, camera);
+                return render;
             }
 
             grade = ["Bad", "Poor", "Regular", "Good", "Gorgeous"];
@@ -484,7 +446,6 @@
                     return;
 
                 for (var i in markersArray) {
-                    //window.console.log(markersArray[i][0].length);
                     if (markersArray[i][0].length === 0) {
                         var infoString =
                                 "<table id='storeInfoWindwo' style='width:330px;margin:10px;'>" +
@@ -580,6 +541,7 @@
                         }
                         infoList += "</table></div>";
 
+                        markersArray[i].setIcon(createCylinder(3, markersArray[i]['Gorgeous'], markersArray[i]['Good'], markersArray[i]['Regular']).toDataURL());
                         var listOfInfoWindow = addListOfInfoWindow(markersArray[i], infoList);
                     }
                 }
@@ -698,8 +660,6 @@
                 getCommentFirstTime();
             }
 
-
-
             function addToFollowList(obj) {
                 $.ajax({
                     url: 'HandleTag?action=addTag&' + 'storeId=' + obj.getAttribute('storeId'),
@@ -716,77 +676,6 @@
                 });
             }
 
-            BookmarkApp = function() {
-                var isIEmac = false; /*@cc_on @if(@_jscript&&!(@_win32||@_win16)&&(@_jscript_version<5.5)) isIEmac=true; @end @*/
-                var isMSIE = (-[1, ]) ? false : true;
-                var cjTitle = document.title; // Bookmark title 
-                var cjHref = location.href;   // Bookmark url
-
-                function hotKeys() {
-                    var ua = navigator.userAgent.toLowerCase();
-                    var str = '';
-                    var isWebkit = (ua.indexOf('webkit') != -1);
-                    var isMac = (ua.indexOf('mac') != -1);
-
-                    if (ua.indexOf('konqueror') != -1) {
-                        str = 'CTRL + B'; // Konqueror
-                    } else if (window.home || isWebkit || isIEmac || isMac) {
-                        str = (isMac ? 'Command/Cmd' : 'CTRL') + ' + D'; // Netscape, Safari, iCab, IE5/Mac
-                    }
-                    return ((str) ? 'Press ' + str + ' to bookmark this page.' : str);
-                }
-
-                function isIE8() {
-                    var rv = -1;
-                    if (navigator.appName == 'Microsoft Internet Explorer') {
-                        var ua = navigator.userAgent;
-                        var re = new RegExp("MSIE ([0-9]{1,}[\.0-9]{0,})");
-                        if (re.exec(ua) != null) {
-                            rv = parseFloat(RegExp.$1);
-                        }
-                    }
-                    if (rv > -1) {
-                        if (rv >= 8.0) {
-                            return true;
-                        }
-                    }
-                    return false;
-                }
-
-                function addBookmark(a) {
-                    try {
-                        if (typeof a == "object" && a.tagName.toLowerCase() == "a") {
-                            a.style.cursor = 'pointer';
-                            if ((typeof window.sidebar == "object") && (typeof window.sidebar.addPanel == "function")) {
-                                window.sidebar.addPanel(cjTitle, cjHref, ""); // Gecko
-                                return false;
-                            } else if (isMSIE && typeof window.external == "object") {
-                                if (isIE8()) {
-                                    window.external.AddToFavoritesBar(cjHref, cjTitle); // IE 8                    
-                                } else {
-                                    window.external.AddFavorite(cjHref, cjTitle); // IE <=7
-                                }
-                                return false;
-                            } else if (window.opera) {
-                                a.href = cjHref;
-                                a.title = cjTitle;
-                                a.rel = 'sidebar'; // Opera 7+
-                                return true;
-                            } else {
-                                alert(hotKeys());
-                            }
-                        } else {
-                            throw "Error occured.\r\nNote, only A tagname is allowed!";
-                        }
-                    } catch (err) {
-                        alert(err);
-                    }
-                }
-
-                return {
-                    addBookmark: addBookmark
-                };
-            }();
 
             function cancelTag(obj) {
                 $.ajax({
@@ -817,31 +706,7 @@
             }
 
             function directEnterStore(obj) {
-                //directly enter store
                 sizeCenterPane();
-                //viewMoreDetail(obj);
-            }
-
-            function colorOfMarker(x) {
-                if (parseInt(parseInt(x) / 100 * 5) === 5)
-                    return markerColorList[1];
-                else if (parseInt(parseInt(x) / 100 * 5) === 4)
-                    return markerColorList[2];
-                else if (parseInt(parseInt(x) / 100 * 5) === 3)
-                    return markerColorList[3];
-                else
-                    return markerColorList[3];
-            }
-
-            function idenClassOfStore(x) {
-                if (parseInt(parseInt(x) / 100 * 5) === 5)
-                    return 0;
-                else if (parseInt(parseInt(x) / 100 * 5) === 4)
-                    return 1;
-                else if (parseInt(parseInt(x) / 100 * 5) === 3)
-                    return 2;
-                else
-                    return 2;
             }
 
             function RightArrow(obj) {
@@ -856,7 +721,6 @@
 
             function sortList(obj) {
                 var pageDisplayed = [];
-
                 for (var x in markerPageArray) {
                     for (var y in markerPageArray[x])
                         pageDisplayed.push(markerPageArray[x][y]);
@@ -1022,10 +886,7 @@
                 infoWindowList.push(infoWindow);
                 google.maps.event.addListener(marker, 'mouseover', function() {
                     closeAllInfoWindow();
-
                     infoWindow.open(map, marker);
-
-
                 });
                 /*
                  google.maps.event.addListener(marker, 'mouseout', function() {
@@ -1036,18 +897,15 @@
             }
 
             function addListOfInfoWindow(marker, message) {
-                window.console.log(marker);
+                
                 var infoWindow = new google.maps.InfoWindow({
                     content: message
                 });
                 infoWindowList.push(infoWindow);
                 google.maps.event.addListener(marker, 'click', function() {
                     closeAllInfoWindow();
-
                     infoWindow.open(map, marker);
-
                     draw(marker);
-
                 });
                 /*
                  google.maps.event.addListener(marker, 'mouseout', function() {
@@ -1084,8 +942,6 @@
                     }
                 }
                 lopStore();
-                //alert(markerFilterList[0]);
-
             }
 
             markerColorList = ["marker/centre.png", "fa220f", "3366cc", "ff9100"];
@@ -1129,13 +985,6 @@
                     return;
                 }
                 var zoom_level = map.getZoom();
-                /*if (map.getZoom() < 10) {
-                 
-                 zoom_level = 10;
-                 map.setZoom(10);
-                 }
-                 */
-
                 var z = 75;
                 var nRadius = z * Math.pow(2, 19 - zoom_level);
                 cityCircle.setRadius(nRadius);
@@ -1181,56 +1030,6 @@
                 }, function() {
                     handleNoGeolocation(true);
                 });
-            }
-
-            function setCircle(radius, pos) {
-                var populationOptions = {
-                    strokeColor: '#FF0000',
-                    strokeOpacity: 0.8,
-                    strokeWeight: 2,
-                    fillColor: '#FF0000',
-                    fillOpacity: 0.20,
-                    map: map,
-                    center: pos,
-                    radius: radius,
-                    editable: true
-                            //Circle can be edited
-                };
-                // Add the circle for this city to the map.
-                cityCircle = new google.maps.Circle(populationOptions);
-                google.maps.event.addListener(cityCircle, "radius_changed", function(e) {
-                    //alert(cityCircle.getRadius());
-                    //alert();
-
-                    $("#slider").slider({
-                        value: cityCircle.getRadius()
-                    });
-                    $("#distance").val(parseInt(cityCircle.getRadius()));
-                    lopStore();
-                    changeZoom();
-                });
-                google.maps.event.addListener(cityCircle, "center_changed", function() {
-                    //cityCircle.setCenter(marker1.getPosition());
-                    map.panTo(cityCircle.getCenter());
-                    map.setCenter(cityCircle.getCenter());
-                    lopStore();
-                });
-            }
-
-            function handleNoGeolocation(errorFlag) {
-                if (errorFlag) {
-                    var content = 'Error: The Geolocation service failed.';
-                } else {
-                    var content = 'Error: Your browser doesn\'t support geolocation.';
-                }
-
-                var options = {
-                    map: map,
-                    position: new google.maps.LatLng(60, 105),
-                    content: content
-                };
-                var infowindow = new google.maps.InfoWindow(options);
-                map.setCenter(options.position);
             }
 
             function sizeCenterPane() {
@@ -1368,16 +1167,6 @@
             function viewPersonalInfo() {
             }
 
-            function zoomIn() {
-                var zoomLevel = parseInt(map.getZoom()) + 1;
-                map.setZoom(zoomLevel);
-            }
-
-            function zoomOut() {
-                var zoomLevel = parseInt(map.getZoom()) - 1;
-                map.setZoom(zoomLevel);
-            }
-
             function openFavList() {
                 $('#dialog-tagList').dialog({
                     autoOpen: false,
@@ -1426,9 +1215,7 @@
         <script type="text/javascript" src="https://www.google.com/jsapi"></script>
         <script type="text/javascript">
             google.load("visualization", "1", {packages: ["corechart"]});
-
             function draw(marker) {
-
                 data = google.visualization.arrayToDataTable([
                     ['Genre', 'Gorgeous', 'Good', 'Regular', {role: 'annotation'}],
                     ['',
@@ -1448,12 +1235,11 @@
                 };
 
                 var newDiv = document.createElement('div');
-
                 var bar = new google.visualization.BarChart(newDiv);
-
                 bar.draw(data, options);
-
                 $('#storeInfoWindowList').parent().prepend(newDiv);
+                
+                
             }
 
         </script>
@@ -1626,11 +1412,10 @@
                 $('#specificStore').animate({right: '0%'});
                 $('#mainContent').animate({right: '70%'});
                 $('#returnToMap').css({visibility: 'visible'});
-                window.console.log($(obj).attr('storeId'));
                 $.ajax({
                     url: 'HandleStore?action=getAStore&storeId=' + $(obj).attr('storeId'),
                     success: function(data) {
-                        window.console.log(data);
+
                     },
                     fail: function() {
                         alert('error');
@@ -1685,5 +1470,8 @@
             }
             );
         </script>
+
+        <canvas id="container"></canvas>
+
     </body>
 </html>
