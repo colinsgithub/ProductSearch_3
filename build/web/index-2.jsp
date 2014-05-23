@@ -33,7 +33,7 @@
         <link rel="stylesheet" href="css/loadingBar.css">
         <link rel="stylesheet" href="css/jquery-ui.css">
         <link rel="stylesheet" href="css/dialog.css">
-
+        <link rel="stylesheet" href="css/jquery.dataTables.css">
 
         <script src="http://code.jquery.com/jquery-1.9.1.js"></script>
         <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
@@ -47,6 +47,8 @@
         <script src="js/makeboxes.js"></script>
         <%--javascript for three.js--%>
         <script src="http://www.html5canvastutorials.com/libraries/three.min.js"></script>
+        <%--javascript for datatable--%>
+        <script src="js/jquery.dataTables.js"></script>
 
         <script>
             //init slider bar
@@ -320,32 +322,13 @@
             }
 
             function createCylinder(layer, oneLayer, twoLayer, threeLayer) {
-                var total = oneLayer + twoLayer + threeLayer;
-                var oneLayerHeight = (oneLayer/total) * 60;
-                var twoLayerHeight = (twoLayer/total) * 60;
-                var threeLayerHeight = (threeLayer/total) * 60;
-                
-                window.console.log(oneLayerHeight);
-                window.console.log(twoLayerHeight);
-                window.console.log(threeLayerHeight);
-                
-                var oneLayerPosition = 50 - 15 - (oneLayerHeight/2);
-                var twoLayerPosistion = oneLayerPosition - (oneLayerHeight/2) - (twoLayerHeight/2);
-                var threeLayerPosition = twoLayerPosistion - (twoLayerHeight/2) - (threeLayerHeight/2)
-                
-                window.console.log(oneLayerPosition);
-                window.console.log(twoLayerPosistion);
-                window.console.log(threeLayerPosition);
-                
                 // renderer
                 var renderer = new THREE.WebGLRenderer();
                 renderer.setSize(80, 70);
                 var render = renderer.domElement;
-
                 // camera
                 var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 1000);
                 camera.position.z = 140;
-
                 // scene
                 var scene = new THREE.Scene();
 
@@ -357,7 +340,6 @@
                 group.position.y = 5;
                 scene.add(group);
                 group.rotation.x = 3.50;
-
                 var topRadius = 23;
                 var bottomRadius = 23;
 
@@ -379,61 +361,40 @@
                 cone.position.set(0, 50, 0);
                 group.add(cone);
 
-                // cylinder
-                // API: THREE.CylinderGeometry(bottomRadius, topRadius, height, segmentsRadius, segmntsHeight)
-                var chartHeight = -30;
-                var position = chartHeight *= -1;
+                //total num of markers
+                var total = oneLayer + twoLayer + threeLayer;
+                var oneLayerHeight = (oneLayer / total) * 60;
+                var twoLayerHeight = (twoLayer / total) * 60;
+                var threeLayerHeight = (threeLayer / total) * 60;
 
-                var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(bottomRadius, topRadius, oneLayerHeight, 15, 1, false), new THREE.MeshPhongMaterial({
-                    color: 7788287,
-                    ambient: 72083,
-                    emissive: 14608396,
-                    specular: 72083,
-                    shininess: 30,
-                    blending: 2,
-                    opacity: 1,
-                    transparent: false,
-                    wireframe: false
-                }));
+                var layersHeight = [oneLayerHeight, twoLayerHeight, threeLayerHeight];
+                var layersColor = [14608396, 72083, 16523523];
 
+                var layerPosition = 50;//base position of 3d marker
+                var previousLayerHeight = 30;//height of cone
+                for (var x = 0; x < 3; x++) {
+                    if (layersHeight[x] !== 0) {
+                        layerPosition -= ((previousLayerHeight / 2) + (layersHeight[x] / 2));
+                        previousLayerHeight = layersHeight[x];
+                        // cylinder
+                        // API: THREE.CylinderGeometry(bottomRadius, topRadius, height, segmentsRadius, segmntsHeight)
+                        var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(bottomRadius, topRadius, layersHeight[x], 15, 1, false), new THREE.MeshPhongMaterial({
+                            color: 7788287,
+                            ambient: 72083,
+                            emissive: layersColor[x],
+                            specular: 72083,
+                            shininess: 30,
+                            blending: 2,
+                            opacity: 1,
+                            transparent: false,
+                            wireframe: false
+                        }));
 
-                cylinder.rotation.x = 0;
-                cylinder.position.set(0, oneLayerPosition, 0);
-                group.add(cylinder);
-
-                var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(bottomRadius, topRadius, twoLayerPosistion, 15, 1, false), new THREE.MeshPhongMaterial({
-                    color: 7788287,
-                    ambient: 72083,
-                    emissive: 72083,
-                    specular: 72083,
-                    shininess: 30,
-                    blending: 2,
-                    opacity: 1,
-                    transparent: false,
-                    wireframe: false
-                }));
-
-
-                cylinder.rotation.x = 0;
-                cylinder.position.set(0, twoLayerPosistion, 0);
-                group.add(cylinder);
-
-                var cylinder = new THREE.Mesh(new THREE.CylinderGeometry(bottomRadius, topRadius, threeLayerHeight, 15, 1, false), new THREE.MeshPhongMaterial({
-                    color: 7788287,
-                    ambient: 72083,
-                    emissive: 16523523,
-                    specular: 72083,
-                    shininess: 30,
-                    blending: 2,
-                    opacity: 1,
-                    transparent: false,
-                    wireframe: false
-
-                }));
-
-                cylinder.rotation.x = 0;
-                cylinder.position.set(0, threeLayerPosition, 0);
-                group.add(cylinder);
+                        cylinder.rotation.x = 0;
+                        cylinder.position.set(0, layerPosition, 0);
+                        group.add(cylinder);
+                    }
+                }
 
                 // render
                 renderer.render(scene, camera);
@@ -541,7 +502,7 @@
                         }
                         infoList += "</table></div>";
 
-                        markersArray[i].setIcon(createCylinder(3, markersArray[i]['Gorgeous'], markersArray[i]['Good'], markersArray[i]['Regular']).toDataURL());
+                        markersArray[i].setIcon(createCylinder(3, markersArray[i]['Regular'], markersArray[i]['Good'], markersArray[i]['Gorgeous']).toDataURL());
                         var listOfInfoWindow = addListOfInfoWindow(markersArray[i], infoList);
                     }
                 }
@@ -677,33 +638,7 @@
             }
 
 
-            function cancelTag(obj) {
-                $.ajax({
-                    url: 'HandleTag?action=cancelTag&' + 'tagId=' + $(obj).parent().attr('tagId'),
-                    type: 'POST',
-                    success: function(response) {
-                        var isLogin = (response === 'false');
-                        if (isLogin) {
-                            $('#personalInfo').click();
-                        } else {
-                            $.ajax({
-                                url: 'HandleTag?action=getTags',
-                                type: 'POST',
-                                success: function(response) {
-                                    $("#tag-display").empty();
-                                    var tags = JSON.parse(response);
-                                    for (var x = 0; x < tags['tags'].length; x++) {
-                                        var storeName = (tags['tags'][x]['storeName']).toUpperCase();
-                                        var tagId = (tags['tags'][x]['tagId']);
-                                        $("#tag-display").append("<div tagId='" + tagId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
-                                    }
-                                    $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
-                                }
-                            });
-                        }
-                    }
-                });
-            }
+
 
             function directEnterStore(obj) {
                 sizeCenterPane();
@@ -834,7 +769,7 @@
                             "<div style='display: inline;'>" +
                             "<table style='width:380px;'>" +
                             "<tr><td></td><td style='font-size:25px;font-family: Roboto;'>" + pageDisplayed[x].name + "</td>" +
-                            "<td rowspan='5' width='40px;font-weight: 600;'><div id='rightArrow' class='controlArrow next' storeId='" + pageDisplayed[x].storeId + "' onclick='viewMoreDetail(this);'></div><td></tr>" +
+                            "<td rowspan='5' width='40px;font-weight: 600;'><div id='rightArrow' class='controlArrow next' storeId='" + pageDisplayed[x].storeID + "' onclick='viewMoreDetail(this);'></div><td></tr>" +
                             "<tr><td rowspan='4'><img style='width:90px;margin-right: 10px;border-radius: 5px;' src='" + pageDisplayed[x].cover + "'/></td>" +
                             "<td style='font-size:15px;font-family: Roboto;display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='height:25px;margin-left:10px;'>" + pageDisplayed[x].distance + "m</div></td></tr>" +
                             "<tr><td style='font-size:15px;font-family: Roboto;display: flex;'><img style='margin-top: auto;height: 25px;margin-bottom: auto;' src='icon/location.png'/><div style='width:70%;margin-left:10px;'>" + pageDisplayed[x].storeAddress + "</div></td></tr>" +
@@ -863,7 +798,7 @@
                             "<div style='display: inline;'>" +
                             "<table style='width:380px;'>" +
                             "<tr><td></td><td style='font-size:25px;font-family: Roboto;'>" + pageDisplayed[x].name + "</td>" +
-                            "<td rowspan='5' width='40px;font-weight: 600;'><div id='rightArrow' class='controlArrow next' storeId='" + pageDisplayed[x].storeId + "' onclick='viewMoreDetail(this);'></div><td></tr>" +
+                            "<td rowspan='5' width='40px;font-weight: 600;'><div id='rightArrow' class='controlArrow next' storeId='" + pageDisplayed[x].storeID + "' onclick='viewMoreDetail(this);'></div><td></tr>" +
                             "<tr><td rowspan='4'><img style='width:90px;margin-right: 10px;' src='" + pageDisplayed[x].cover + "'/></td>" +
                             "<td style='font-size:15px;font-family: Roboto;display: flex;'><img style='height:25px;' src='icon/compasses.png'/><div style='height:25px;margin-left:10px;'>" + pageDisplayed[x].distance + "m</div></td></tr>" +
                             "<tr><td style='font-size:15px;font-family: Roboto;display: flex;'><img style='margin-top: auto;height: 25px;margin-bottom: auto;' src='icon/location.png'/><div style='width:70%;margin-left:10px;'>" + pageDisplayed[x].storeAddress + "</div></td></tr>" +
@@ -897,7 +832,7 @@
             }
 
             function addListOfInfoWindow(marker, message) {
-                
+
                 var infoWindow = new google.maps.InfoWindow({
                     content: message
                 });
@@ -944,12 +879,11 @@
                 lopStore();
             }
 
-            markerColorList = ["marker/centre.png", "fa220f", "3366cc", "ff9100"];
+            markerColorList = ["marker/centre.png", gorgeousCylinderIcon, goodCylinderIcon, regularCylinderIcon];
             function markerList() {
                 //the list of marker
                 map.controls[google.maps.ControlPosition.LEFT_BOTTOM].push(document.getElementById('legend'));
                 var legend = document.getElementById('legend');
-                var path = "http://chart.apis.google.com/chart?chst=d_map_pin_letter&chld=|";
                 var value = ["Current", "Gorgeous", "Good", "Regular"];
                 for (var i = 0; i < markerColorList.length; i++) {
                     var div = document.createElement('div');
@@ -959,7 +893,7 @@
                         div.innerHTML += '<img src="' + markerColorList[i] + '" height="50px" width="50"/>' + '<div style="display: table-cell;vertical-align: middle;">' + value[i] + '</div>';
                     } else {
                         div.innerHTML = '<input type="checkbox" checked="checked" id="markerFilter" onchange="markerFilter(this);" name="markerFilter" value="' + value[i] + '" style="height:40px;width:20px;"/>';
-                        div.innerHTML += '<img src="' + path + markerColorList[i] + '" height="40px" width="25"/>' + '<div style="display: table-cell;vertical-align: middle;">' + value[i] + '</div>';
+                        div.innerHTML += '<img src="' + markerColorList[i] + '" height="40px" width="25"/>' + '<div style="display: table-cell;vertical-align: middle;">' + value[i] + '</div>';
                     }
                     legend.appendChild(div);
                 }
@@ -1171,12 +1105,11 @@
                 $('#dialog-tagList').dialog({
                     autoOpen: false,
                     height: 350,
-                    width: 350,
+                    width: 500,
                     draggable: false,
                     modal: true,
                     resizable: false,
                     close: function() {
-                        $('#tag-display').empty();
                         $('.loading').remove();
                     }
                 });
@@ -1189,14 +1122,106 @@
                         if (isLogin) {
                             $('#personalInfo').click();
                         } else {
-
-                            var tags = JSON.parse(response);
-
-                            for (var x = 0; x < tags['tags'].length; x++) {
-                                var storeName = (tags['tags'][x]['storeName']).toUpperCase();
-                                var tagId = (tags['tags'][x]['tagId']);
-                                $("#tag-display").append("<div tagId='" + tagId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
+                            /*
+                             var tags = JSON.parse(response);
+                             
+                             for (var x = 0; x < tags['tags'].length; x++) {
+                             var storeName = (tags['tags'][x]['storeName']).toUpperCase();
+                             var tagId = (tags['tags'][x]['tagId']);
+                             $("#tag-display").append("<div tagId='" + tagId + "'>" + storeName + "<img src='icon/hear4.png' onclick='cancelTag(this);'/></div>");
+                             }
+                             */
+                            /* Formatting function for row details - modify as you need */
+                            function format(d) {
+                                // `d` is the original data object for the row
+                                return '<table cellpadding="5" cellspacing="0" border="0" style="padding-left:50px;">' +
+                                        '<tr>' +
+                                        '<td>Address :</td>' +
+                                        '<td>' + d.storeAddress + '</td>' +
+                                        '</tr>' +
+                                        '<tr>' +
+                                        '<td>Extension number:</td>' +
+                                        '<td></td>' +
+                                        '</tr>' +
+                                        '</table>';
                             }
+
+
+                            var table = $('#tag-table').DataTable({
+                                "ajax": "HandleTag?action=getTags",
+                                "iDisplayLength": 50,
+                                "bLengthChange": false,
+                                "bDestroy": true,
+                                "columns": [
+                                    {
+                                        "class": 'details-control',
+                                        "orderable": false,
+                                        "data": null,
+                                        "defaultContent": ''
+                                    },
+                                    {"data": "storeName"},
+                                    {
+                                        "class": 'tag-remove',
+                                        "orderable": false,
+                                        "data": 'tagID',
+                                        "defaultContent": ''
+                                    }
+                                ],
+                                "order": [[1, 'asc']],
+                                "oLanguage": {
+                                    "oPaginate": {
+                                        "sNext": "",
+                                        "sPrevious": ""
+                                    },
+                                    "sInfo": ""
+                                },
+                                "bSearchable": false,
+                                "aoColumnDefs": [
+                                    {"aTargets": [2],
+                                        "fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
+                                            $(nTd).empty();
+                                            $(nTd).attr("tagId", sData);
+                                            window.console.log(nTd);
+                                        }
+                                    }
+                                ]
+                            });
+
+                            // Add event listener for opening and closing details
+                            $('#tag-table tbody').on('click', 'td.details-control', function() {
+                                var tr = $(this).parents('tr');
+                                var row = table.row(tr);
+
+                                if (row.child.isShown()) {
+                                    // This row is already open - close it
+                                    row.child.hide();
+                                    tr.removeClass('shown');
+                                }
+                                else {
+                                    // Open this row
+                                    row.child(format(row.data())).show();
+                                    tr.addClass('shown');
+                                }
+                            });
+
+                            $('#tag-table tbody').on('click', 'td.tag-remove', function() {
+                                var tagId = $(this).attr('tagid');
+                                window.console.log(tagId);
+                                $.ajax({
+                                    url: 'HandleTag?action=cancelTag&' + 'tagId=' + tagId,
+                                    type: 'POST',
+                                    success: function(response) {
+                                        var isLogin = (response === 'false');
+                                        if (isLogin) {
+                                            $('#personalInfo').click();
+                                        } else {
+                                            $("#dialog-tagList").parent().append("<div id='loading' class='loading' style='display: none;'></div>");
+                                         
+                                        }
+                                    }
+                                });
+                            });
+
                             $("#dialog-tagList").parent().prepend("<div id='loading' class='loading' style='display: none;'></div>");
                             $('#dialog-tagList').dialog('open');
                             $("#dialog-tagList").parent().position({
@@ -1216,7 +1241,7 @@
         <script type="text/javascript">
             google.load("visualization", "1", {packages: ["corechart"]});
             function draw(marker) {
-                data = google.visualization.arrayToDataTable([
+                var data = google.visualization.arrayToDataTable([
                     ['Genre', 'Gorgeous', 'Good', 'Regular', {role: 'annotation'}],
                     ['',
                         marker['Gorgeous'],
@@ -1225,21 +1250,29 @@
                         '']
                 ]);
 
+                var view = new google.visualization.DataView(data);
+                view.setColumns([0, 1,
+                    {calc: "stringify",
+                        sourceColumn: 1,
+                        type: "string",
+                        role: "annotation"},
+                    2]);
+
                 options = {
                     width: 300,
                     height: 50,
                     legend: {position: 'top', maxLines: 5},
                     bar: {groupWidth: '75%'},
                     colors: ["fa220f", "3366cc", "ff9100"],
-                    isStacked: true
+                    isStacked: true,
                 };
 
                 var newDiv = document.createElement('div');
                 var bar = new google.visualization.BarChart(newDiv);
                 bar.draw(data, options);
                 $('#storeInfoWindowList').parent().prepend(newDiv);
-                
-                
+
+
             }
 
         </script>
@@ -1412,14 +1445,26 @@
                 $('#specificStore').animate({right: '0%'});
                 $('#mainContent').animate({right: '70%'});
                 $('#returnToMap').css({visibility: 'visible'});
-                $.ajax({
-                    url: 'HandleStore?action=getAStore&storeId=' + $(obj).attr('storeId'),
-                    success: function(data) {
 
-                    },
-                    fail: function() {
-                        alert('error');
-                    }
+
+                $('#productofStore').html('<table id="example" class="display" cellspacing="0" width="100%"></table>');
+                $('#example').dataTable({
+                    "ajax": 'HandleStore?action=getAStore&storeId=' + $(obj).attr('storeId'),
+                    "aoColumnDefs": [
+                        {"aTargets": [2],
+                            "fnCreatedCell": function(nTd, sData, oData, iRow, iCol) {
+                                var value = $(nTd).html();
+                                $(nTd).empty();
+                                $(nTd).append("<img style=height:80px;' src = " + value + "></img>");
+                            }
+
+                        }
+                    ],
+                    "columns": [
+                        {"title": "Name", "class": "center"},
+                        {"title": "Desc", "class": "center"},
+                        {"title": "Image", "class": "center"}
+                    ]
                 });
             }
 
@@ -1429,10 +1474,14 @@
                 $('#specificStore').animate({right: '-70%'});
                 $('#mainContent').animate({right: '0%'});
                 $('#returnToMap').css({visibility: 'hidden'});
+                $('#productofStore').empty();
             });</script>
         <div id="specificStore" style="box-shadow: rgba(0, 0, 0, 0.298039) 0px 2px 60px;position: absolute; width: 70%; height: 100%;top: 0px; right: -70%;background-color: window;z-index: 3;">
+            <div id="productofStore" style=" height: 100%;margin-right: 70px; margin-left: 10px;">
 
+            </div>
         </div>
+
 
         <div id="dialog-form" class="diaglog-form">
             <div class="login-title">Log In</div>
@@ -1450,7 +1499,17 @@
 
         <div id="dialog-tagList">
             <div class="login-title">Your Favorite</div>
-            <div id="tag-display" class="tag-display"></div>
+            <div id="tag-display" class="tag-display">
+                <table id="tag-table" class="display" cellspacing="0" width="100%">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Name</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
         </div>
 
         <div id="dialog-commentList">

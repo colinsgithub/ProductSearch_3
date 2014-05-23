@@ -52,26 +52,22 @@ public class HandleTag extends HttpServlet {
             try {
                 HttpSession httpSession = request.getSession(false);
                 User user = (User) httpSession.getAttribute("user");
-
+                
                 ArrayList<Tag> tags = new ArrayList<Tag>(user.getTagCollection());
 
-                JSONArray array = new JSONArray();
-
-                JSONObject store;
-                //declare for each store
                 JSONObject jsonObject = new JSONObject();
-
+                JSONArray array = new JSONArray();
                 for (int x = 0; x < tags.size(); x++) {
-                    store = new JSONObject();
-                    store.put("storeName", tags.get(x).getStoreID().getStoreName());
-                    store.put("storeId", tags.get(x).getStoreID().getStoreID());
-                    store.put("tagId", tags.get(x).getTagID());
-                    array.put(store);
-                    //stack overflow easily happens
+                    JSONObject tag = new JSONObject();
+                    tag.put("storeName" ,tags.get(x).getStoreID().getStoreName());
+                    tag.put("storeAddress" ,tags.get(x).getStoreID().getAddress());
+                    tag.put("tagID" ,tags.get(x).getTagID());
+                    array.put(tag);
                 }
-
-                jsonObject.put("tags", array);
+                
+                jsonObject.put("data", array);
                 out.println(jsonObject);
+
 
 
             } catch (JSONException ex) {
